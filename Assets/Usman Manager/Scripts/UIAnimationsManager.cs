@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
-using Sirenix.OdinInspector;
 
 public class UIAnimationsManager : MonoBehaviour
 {
     public List<GameObject> scaleAbleItems;
     public List<GameObject> nonScaleAbleItems;
     public bool isInitialDelay;
-    [ShowIf("isInitialDelay")]
     [Range(0, 5)]
     public float initialDelay;
     [Range(0, 5)]
@@ -18,11 +16,9 @@ public class UIAnimationsManager : MonoBehaviour
     public int noOfRotations = 2;
     public bool alphaChange;
     public bool fromTo;
-    [ShowIf("fromTo")]
     public Vector3 scaleFrom, scaleTo;
     public bool ignoreTime;
     public bool inLoop;
-    [ShowIf("inLoop")]
     [Range(0, 10)]
     public float loopDelay;
     public enum ScaleType

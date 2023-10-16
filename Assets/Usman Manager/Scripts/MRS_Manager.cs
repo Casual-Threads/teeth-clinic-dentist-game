@@ -1,13 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 #region MovementProperties
 [System.Serializable]
 public class MovementProperties
 {
-    [InfoBox("Movement will be applied according to current position to the user provied move position.")]
     public enum MoveNow
     {
         no, yes
@@ -24,33 +22,23 @@ public class MovementProperties
     public MoveNow moveNow;
     public EaseType easeType;
     public LoopType loopType;
-    [OnValueChanged("OnMoveFromChanged")]
     public bool moveFrom;
-    [ShowIf("moveFrom")]
     public Vector3 moveFromPosition;
     public Vector3 moveToPosition;
-    [OnValueChanged("OnFromCurrentPositionChanged")]
     public bool fromCurrentPosition;
-    [ShowIf("fromCurrentPosition")]
     public Transform targetPoint;
     [Range(0f, 20f)]
     public float moveTime;
     public bool isLocal, ignoreTimeScale;
     public bool startDelay;
-    [ShowIf("startDelay")]
     [Range(0.1f, 10f)]
     public float startMoveDelay;
-    [OnValueChanged("OnFixChange")]
     public bool fixMoveDelay;
-    [ShowIf("fixMoveDelay")]
     [Range(0.1f, 10f)]
     public float fixMoveDelayValue;
-    [OnValueChanged("OnRandomChange")]
     public bool randomMoveDelay;
-    [ShowIf("randomMoveDelay")]
     [Range(0f, 1f)]
     public float minMoveDelayValue;
-    [ShowIf("randomMoveDelay")]
     [Range(1f, 20f)]
     public float maxMoveDelayValue;
     [HideInInspector]
@@ -107,20 +95,14 @@ public class RotationProperties
     public float rotationTime;
     public bool isLocal, ignoreTimeScale;
     public bool startDelay;
-    [ShowIf("startDelay")]
     [Range(0.1f, 10f)]
     public float startRotationDelay;
-    [OnValueChanged("OnFixChange")]
     public bool fixRotationDelay;
-    [ShowIf("fixRotationDelay")]
     [Range(0.1f, 10f)]
     public float fixRotationDelayValue;
-    [OnValueChanged("OnRandomChange")]
     public bool randomRotationDelay;
-    [ShowIf("randomRotationDelay")]
     [Range(0f, 1f)]
     public float minRotationDelayValue;
-    [ShowIf("randomRotationDelay")]
     [Range(1f, 20f)]
     public float maxRotationDelayValue;
     [HideInInspector]
@@ -140,7 +122,6 @@ public class RotationProperties
 [System.Serializable]
 public class ScaleProperties
 {
-    [InfoBox("Changing values at run time may show weird behaviour")]
     public enum ScaleNow
     {
         no, yes
@@ -158,27 +139,20 @@ public class ScaleProperties
     public EaseType easeType;
     public LoopType loopType;
     public bool fromTo;
-    [ShowIf("fromTo")]
     public Vector3 scaleFrom;
     public Vector3 scaleTo;
     [Range(0f, 20f)]
     public float scaleTime;
     public bool isLocal, ignoreTimeScale;
     public bool startDelay;
-    [ShowIf("startDelay")]
     [Range(0.1f, 10f)]
     public float startScaleDelay;
-    [OnValueChanged("OnFixChange")]
     public bool fixScaleDelay;
-    [ShowIf("fixScaleDelay")]
     [Range(0.1f, 10f)]
     public float fixScaleDelayValue;
-    [OnValueChanged("OnRandomChange")]
     public bool randomScaleDelay;
-    [ShowIf("randomScaleDelay")]
     [Range(0f, 1f)]
     public float minScaleDelayValue;
-    [ShowIf("randomScaleDelay")]
     [Range(1f, 20f)]
     public float maxScaleDelayValue;
     [HideInInspector]
@@ -210,14 +184,8 @@ public class ScaleProperties
 public class MRS_Manager : MonoBehaviour
 {
     #region Variables
-    [FoldoutGroup("Movement Properties")]
-    [HideLabel]
     public MovementProperties movementProps;
-    [FoldoutGroup("Rotation Properties")]
-    [HideLabel]
     public RotationProperties rotationProps;
-    [FoldoutGroup("Scale Properties")]
-    [HideLabel]
     public ScaleProperties scaleProps;
     private bool canMove, canRorate, canScale, setMoveDelay, setRotationDelay, setScaleDelay, isSet;
     private string xAxis = "x", yAxis = "y", zAxis = "z", easeType = "easetype", isLocal = "islocal", tweenTime = "time", loopType = "loopType", ignoreTimeScale = "ignoretimescale";

@@ -32,7 +32,7 @@ public class TeethCleaning : MonoBehaviour
     public GameObject brush, excavator, grinder, drill, chewPuller, teethLaser;
     [Header("Items Layers")]
     public GameObject tray;
-    public GameObject dirtyTeethLayer, teethShine, indicationsObject;
+    public GameObject dirtyTeethLayer, teethShine/*, indicationsObject*/;
     [Header("Panels")]
     public GameObject TeethCleaningPanel;
     public GameObject levelCompletePanel, settingPanel, RateUsPanel, loadingPanel;
@@ -275,18 +275,7 @@ public class TeethCleaning : MonoBehaviour
             
         }
         taskFillbar.fillAmount += 0.1f;
-        if(taskFillbar.fillAmount >= 0.2f)
-        {
-            starImages[0].sprite = goldStarSprite;
-            if (taskFillbar.fillAmount >= 0.5f)
-            {
-                starImages[1].sprite = goldStarSprite;
-                if (taskFillbar.fillAmount >= 0.83f)
-                {
-                    starImages[2].sprite = goldStarSprite;
-                }
-            }       
-        }
+        TaskFillBar();
         itemDropSFX.Play();
         StartCoroutine(EnableOrDisable(0.5f, clipper, true));
         if (trayImages[0].gameObject.activeSelf && trayImages[1].gameObject.activeSelf && trayImages[2].gameObject.activeSelf && trayImages[3].gameObject.activeSelf
@@ -308,6 +297,22 @@ public class TeethCleaning : MonoBehaviour
             }
         }
         StartCoroutine(TrayIEnumerator());
+    }
+
+    public void TaskFillBar()
+    {
+        if (taskFillbar.fillAmount >= 0.2f)
+        {
+            starImages[0].sprite = goldStarSprite;
+            if (taskFillbar.fillAmount >= 0.5f)
+            {
+                starImages[1].sprite = goldStarSprite;
+                if (taskFillbar.fillAmount >= 0.83f)
+                {
+                    starImages[2].sprite = goldStarSprite;
+                }
+            }
+        }
     }
 
     #region EnableOrDisable

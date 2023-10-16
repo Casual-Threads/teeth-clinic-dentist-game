@@ -4,12 +4,20 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - YellowTeethTag
-  - YellowGreenDurtTag
-  - BlackTeethTag
+  - DamagedTeethTag
+  - DurtTag
+  - SingleTeethTag
+  - BrushTag
+  - EmptyTag
+  - ReparedTeethTag
   - CrackTag
-  - ChewTag
+  - YellowTeethTag
   - GreenDotTag
+  - YellowGreenDurtTag
+  - ChewTag
+  - BlackTeethTag
+  - BlackDamagedTeethTag
+  - YellowDamagedTeethTag
   layers:
   - Default
   - TransparentFX
