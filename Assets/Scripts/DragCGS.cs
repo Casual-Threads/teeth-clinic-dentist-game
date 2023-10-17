@@ -25,12 +25,19 @@ public class DragCGS : MonoBehaviour
     private Animator m_Animator;
     private int didTrigger;
     private bool inTrigger = false;
+    private bool isSingleTeethOff, isYellowTeethOff, isReparedTeethOn , isbrown, isblack, isyellow;
+ 
     public Transform  downParent;
     TeethCleaning TeethCleaningController;
     TeethReparing TeethReparingController;
     public UnityEvent MouseDown;
     public UnityEvent MouseUp;
+    public UnityEvent SoundPlaySFX;
+    public UnityEvent SoundStopSFX;
     private int index = 0;
+    private int blackIndex = 0;
+    private int emptyIndex = 0;
+    private int reparedIndex = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -109,6 +116,7 @@ public class DragCGS : MonoBehaviour
     void OnMouseUp()
     {
         MouseUp.Invoke();
+        SoundStopSFX.Invoke();
         var _Renderers = GetComponentsInChildren<Renderer>();
         for (int i = 0; i < _Renderers.Length; i++)
         {
@@ -129,6 +137,7 @@ public class DragCGS : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D col)
     {
+        
         #region Teeth Cleaning
         if (TeethCleaningController)
         {
@@ -449,55 +458,61 @@ public class DragCGS : MonoBehaviour
             else if ((col.gameObject.tag == "SingleTeethTag" || col.gameObject.tag == "EmptyTag" || col.gameObject.tag == "ReparedTeethTag") && gameObject.name == "Brush")
             {
                 gameObject.transform.GetChild(0).GetChild(0).gameObject.SetActive(true);
-                TeethReparingController.burshSFX.Play();
-                if(col.gameObject.tag == "SingleTeethTag")
+                //TeethReparingController.burshSFX.Play();
+                SoundPlaySFX.Invoke();
+                if (col.gameObject.tag == "SingleTeethTag")
                 {
                     col.GetComponent<Image>().color = new Color(1, 1, 1, col.GetComponent<Image>().color.a - 0.2f);
 
                     if (col.GetComponent<Image>().color.a <= 0)
                     {
+                        col.GetComponent<PolygonCollider2D>().enabled = false;
                         col.enabled = false;
                         TeethReparingController.taskFillbar.fillAmount += 0.125f;
                         TeethReparingController.TaskFillBar();
                         index++;
                         if (index == 8)
                         {
+                            //isSingleTeethOff = true;
                             index = 0;
                         }
 
                     }
                 }
-                if(col.gameObject.tag == "EmptyTag")
+                if (col.gameObject.tag == "EmptyTag")
                 {
                     col.transform.GetChild(0).GetComponent<Image>().color = new Color(1, 1, 1, col.transform.GetChild(0).GetComponent<Image>().color.a - 0.2f);
-
-                    if (col.GetComponent<Image>().color.a <= 0)
+                    if (col.transform.GetChild(0).GetComponent<Image>().color.a <= 0)
                     {
+                        col.GetComponent<PolygonCollider2D>().enabled = false;
                         col.enabled = false;
-                        index++;
-                        if (index == 2)
+                        emptyIndex++;
+                        if (emptyIndex == 2)
                         {
-                            index = 0;
+                            isYellowTeethOff = true;
+                            emptyIndex = 0;
                         }
                     }
 
                 }
-                if(col.gameObject.tag == "ReparedTeethTag")
+                if (col.gameObject.tag == "ReparedTeethTag")
                 {
                     col.transform.GetChild(0).GetComponent<Image>().color = new Color(1, 1, 1, col.transform.GetChild(0).GetComponent<Image>().color.a + 0.2f);
-
-                    if (col.GetComponent<Image>().color.a >= 1)
+                    if (col.transform.GetChild(0).GetComponent<Image>().color.a >= 1)
                     {
+                        col.GetComponent<PolygonCollider2D>().enabled = false;
                         col.enabled = false;
-                        index++;
-                        if (index == 2)
+                        reparedIndex++;
+                        if (reparedIndex == 2)
                         {
-                            index = 0;
+                            isReparedTeethOn = true;
+                            reparedIndex = 0;
                         }
                     }
                 }
-                if (TeethReparingController.taskFillbar.fillAmount == 1)
+                if ((TeethReparingController.taskFillbar.fillAmount == 1 && isReparedTeethOn == true) && isYellowTeethOff == true)
                 {
+                    SoundStopSFX.Invoke();
                     TeethReparingController.TaskDone();
                 }
             }
@@ -519,26 +534,30 @@ public class DragCGS : MonoBehaviour
                         {
                             index = 0;
                             TeethReparingController.TaskDone();
+                            SoundStopSFX.Invoke();
                         }
 
                     }
                 }
             }
-            else if ((col.gameObject.tag == "DamagedTeethTag" || col.gameObject.tag == "BlackDamagedTeethTag") && gameObject.name == "Drill")
+            else if ((col.gameObject.tag == "DamagedTeethTag" || col.gameObject.tag == "BlackDamagedTeethTag") && gameObject.name == "FirstDrill")
             {
                 gameObject.transform.GetComponent<Animator>().enabled = true;
                 TeethReparingController.drillSFX.Play();
+
                 if (col.gameObject.tag == "DamagedTeethTag")
                 {
                     col.GetComponent<Image>().color = new Color(1, 1, 1, col.GetComponent<Image>().color.a - 0.2f);
                     if (col.GetComponent<Image>().color.a <= 0)
                     {
                         col.transform.GetChild(0).gameObject.SetActive(false);
-                        col.enabled = false; TeethReparingController.taskFillbar.fillAmount += 0.1667f;
+                        col.enabled = false;
+                        TeethReparingController.taskFillbar.fillAmount += 0.1667f;
                         TeethReparingController.TaskFillBar();
                         index++;
                         if (index == 6)
                         {
+                            isbrown = true;
                             index = 0;
                         }
 
@@ -547,38 +566,44 @@ public class DragCGS : MonoBehaviour
                 if (col.gameObject.tag == "BlackDamagedTeethTag")
                 {
                     col.GetComponent<Image>().color = new Color(1, 1, 1, col.GetComponent<Image>().color.a + 0.2f);
-                    if (col.GetComponent<Image>().color.a <= 0)
+                    if (col.GetComponent<Image>().color.a >= 1)
                     {
-                        index++;
-                        if (index == 6)
+                        col.enabled = false;
+                        blackIndex++;
+                        if (blackIndex == 6)
                         {
-                            index = 0;
+                            isblack = true;
+                            blackIndex = 0;
                         }
 
                     }
                 }
-                if (TeethReparingController.taskFillbar.fillAmount == 1)
+                if ((TeethReparingController.taskFillbar.fillAmount == 1 && isbrown == true) && isblack == true)
                 {
+                    isblack = false;
                     TeethReparingController.TaskDone();
+                    SoundStopSFX.Invoke();
                 }
-
             }
-            else if ((col.gameObject.tag == "YellowDamagedTeethTag" || col.gameObject.tag == "BlackDamagedTeethTag") && gameObject.name == "Drill")
+
+            else if ((col.gameObject.tag == "BlackDamagedTeethTag" || col.gameObject.tag == "YellowDamagedTeethTag") && gameObject.name == "SecondDrill")
             {
                 gameObject.transform.GetComponent<Animator>().enabled = true;
+                gameObject.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(true);
                 TeethReparingController.drillSFX.Play();
+
                 if (col.gameObject.tag == "BlackDamagedTeethTag")
                 {
                     col.GetComponent<Image>().color = new Color(1, 1, 1, col.GetComponent<Image>().color.a - 0.2f);
                     if (col.GetComponent<Image>().color.a <= 0)
                     {
                         col.transform.GetChild(0).gameObject.SetActive(false);
-                        col.enabled = false; TeethReparingController.taskFillbar.fillAmount += 0.1667f;
-                        TeethReparingController.TaskFillBar();
-                        index++;
-                        if (index == 6)
+                        col.enabled = false;
+                        blackIndex++;
+                        if (blackIndex == 6)
                         {
-                            index = 0;
+                            isblack = true;
+                            blackIndex = 0;
                         }
 
                     }
@@ -586,22 +611,79 @@ public class DragCGS : MonoBehaviour
                 if (col.gameObject.tag == "YellowDamagedTeethTag")
                 {
                     col.GetComponent<Image>().color = new Color(1, 1, 1, col.GetComponent<Image>().color.a + 0.2f);
-                    if (col.GetComponent<Image>().color.a <= 0)
+                    if (col.GetComponent<Image>().color.a >= 1)
                     {
+                        col.enabled = false;
+                        TeethReparingController.taskFillbar.fillAmount += 0.1667f;
+                        TeethReparingController.TaskFillBar();
                         index++;
                         if (index == 6)
                         {
+                            isyellow = true;
                             index = 0;
                         }
 
                     }
                 }
-                if (TeethReparingController.taskFillbar.fillAmount == 1)
+                if ((TeethReparingController.taskFillbar.fillAmount == 1 && isyellow == true) && isblack == true)
+                {
+                    TeethReparingController.drillSFX.Stop();
+                    isyellow = false;
+                    isblack = false;
+                    TeethReparingController.TaskDone();
+                    SoundStopSFX.Invoke();
+                }
+            }
+
+            else if(col.gameObject.name == "Pot" && gameObject.name == "Spoon")
+            {
+                col.gameObject.transform.GetComponent<Animator>().enabled = true;
+                col.transform.GetChild(0).gameObject.SetActive(true);
+                gameObject.SetActive(false);
+
+            }
+            else if((col.gameObject.tag == "YellowDamagedTeethTag" || col.gameObject.tag == "WhiteDamagedTeethTag") && gameObject.name == "SpoonOne")
+            {
+                if (col.gameObject.tag == "YellowDamagedTeethTag")
+                {
+                    col.GetComponent<Image>().color = new Color(1, 1, 1, col.GetComponent<Image>().color.a - 0.2f);
+                    if (col.GetComponent<Image>().color.a <= 0)
+                    {
+                        col.enabled = false;
+                        col.transform.GetChild(0).gameObject.SetActive(false);
+                        blackIndex++;
+                        if (blackIndex == 6)
+                        {
+                            isblack = true;
+                            blackIndex = 0;
+                        }
+
+                    }
+                }
+                if (col.gameObject.tag == "WhiteDamagedTeethTag")
+                {
+                    col.GetComponent<Image>().color = new Color(1, 1, 1, col.GetComponent<Image>().color.a + 0.2f);
+                    if (col.GetComponent<Image>().color.a >= 1)
+                    {
+                        col.enabled = false;
+                        TeethReparingController.taskFillbar.fillAmount += 0.167f;
+                        TeethReparingController.TaskFillBar();
+                        index++;
+                        if (index == 6)
+                        {
+                            isyellow = true;
+                            index = 0;
+                        }
+
+                    }
+                }
+                if (isyellow == true && isblack == true)
                 {
                     TeethReparingController.TaskDone();
                 }
-
             }
+
+
 
             else if (col.gameObject.tag == "GreenDotTag" && gameObject.name == "TeethLaser")
             {
@@ -645,23 +727,26 @@ public class DragCGS : MonoBehaviour
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (TeethCleaningController)
+        if ((collision.gameObject.tag == "BlackDamagedTeethTag" || collision.gameObject.tag == "YellowDamagedTeethTag") && gameObject.name == "SecondDrill")
         {
-            TeethCleaningController.burshSFX.Stop();
-            TeethCleaningController.excavatorSFX.Stop();
-            TeethCleaningController.grinderSFX.Stop();
-            TeethCleaningController.drillSFX.Stop();
-            TeethCleaningController.chewPullerSFX.Stop();
-            TeethCleaningController.teethLaserSFX.Stop();
+            gameObject.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(false);
         }
-        else if (TeethReparingController)
-        {
-            TeethReparingController.burshSFX.Stop();
-            TeethReparingController.excavatorSFX.Stop();
-            TeethReparingController.drillSFX.Stop();
-            TeethReparingController.teethLaserSFX.Stop();
-
-        }
+        //if (TeethCleaningController)
+        //{
+        //    TeethCleaningController.burshSFX.Stop();
+        //    TeethCleaningController.excavatorSFX.Stop();
+        //    TeethCleaningController.grinderSFX.Stop();
+        //    TeethCleaningController.drillSFX.Stop();
+        //    TeethCleaningController.chewPullerSFX.Stop();
+        //    TeethCleaningController.teethLaserSFX.Stop();
+        //}
+        //else if (TeethReparingController)
+        //{
+        //    TeethReparingController.burshSFX.Stop();
+        //    TeethReparingController.excavatorSFX.Stop();
+        //    TeethReparingController.drillSFX.Stop();
+        //    TeethReparingController.teethLaserSFX.Stop();
+        //}
 
         inTrigger = false;
         if (MouseDownIndicator) MouseDownIndicator.SetActive(true);
