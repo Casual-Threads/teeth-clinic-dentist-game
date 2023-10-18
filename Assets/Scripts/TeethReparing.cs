@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 [System.Serializable]
 public enum TeethReparingActionPerform
 {
-    none, Clipper, Brush, Excavator, FirstDrill, SecondDrill, FillSpoon, TeethLaser
+    none, Clipper, Brush, Excavator, FirstDrill, SecondDrill, FillSpoon, TeethLaser, PourWater, WateringOut
 }
 
 public class TeethReparing : MonoBehaviour
@@ -29,10 +29,10 @@ public class TeethReparing : MonoBehaviour
     public TeethReparingActionPerform action;
     [Header("Dragable Items")]
     public GameObject clipper;
-    public GameObject brush, excavator, firstDrill, secondDrill, spoonWithPot, teethLaser;
+    public GameObject brush, excavator, firstDrill, secondDrill, spoonWithPot, teethLaser, waterPipe, waterOutPump;
     [Header("Items Layers")]
-    public GameObject emptyTray;
-    public GameObject dirtyTeethLayer, whiteTeethLayer, teethShine/*, singleTeeth*/;
+    public GameObject tray;
+    public GameObject emptyTray, dirtyTeethLayer, whiteTeethLayer, teethShine, waterLayer, pumpWaterLayer, secondWaterOutPump;
     [Header("Panels")]
     public GameObject TeethReparingPanel;
     public GameObject levelCompletePanel, settingPanel, RateUsPanel, loadingPanel;
@@ -45,7 +45,6 @@ public class TeethReparing : MonoBehaviour
     [Header("Arrays for Indications")]
     public Image[] durtLayer;
     public Image[] brownDamagedTeethLayer, blackDamagedTeethLayer, yellowDamagedTeethLayer;
-    public PolygonCollider2D[] yellowDamagedTeeth;
     [Header("Sprites")]
     public Sprite goldStarSprite;
     public Sprite grayStarSprite, onLightSprite, offLightSprite, cleanTeethLayer, onSprite, OffSprite;
@@ -61,22 +60,10 @@ public class TeethReparing : MonoBehaviour
     public Transform downParent;
     void Start()
     {
-        action = TeethReparingActionPerform.SecondDrill;
-        for (int i = 0; i < blackDamagedTeethLayer.Length; i++)
-        {
-            blackDamagedTeethLayer[i].transform.GetChild(0).gameObject.SetActive(true);
-            if (downParent)
-            {
-                blackDamagedTeethLayer[i].transform.parent = downParent;
-            }
-        }
+        action = TeethReparingActionPerform.Clipper;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    #region LightOnOFF
     public void LightOnOff()
     {
         if(isLight == false)
@@ -92,7 +79,9 @@ public class TeethReparing : MonoBehaviour
             lightWhiteLayer.transform.DOScale(new Vector3(0f, 0f, 0f), 0.15f);
         }
     }
+    #endregion
 
+    #region SettingPanel
     public void SettingPanel()
     {
         settingPanel.SetActive(true);
@@ -125,14 +114,17 @@ public class TeethReparing : MonoBehaviour
         }
         settingPanel.SetActive(true);
     }
+    #endregion
 
+    #region Next Scene Load
     public void LoadNextScene(string str)
     {
         loadingPanel.SetActive(true);
         StartCoroutine(LoadingScene(str));
     }
+    #endregion
 
-
+    #region TaskDone
     public void TaskDone()
     {   
         if (action == TeethReparingActionPerform.Clipper)
@@ -159,11 +151,9 @@ public class TeethReparing : MonoBehaviour
         else if(action == TeethReparingActionPerform.Excavator)
         {
             taskDoneParticle.gameObject.SetActive(true);
-            action = TeethReparingActionPerform.FirstDrill;
             StartCoroutine(EnableOrDisable(0.5f, excavator, false));
             StartCoroutine(EnableOrDisable(0.5f, firstDrill, true));
             AfterTaskDonePerform();
-
             for (int i = 0; i < brownDamagedTeethLayer.Length; i++)
             {
                 brownDamagedTeethLayer[i].transform.GetChild(0).gameObject.SetActive(true);
@@ -172,15 +162,14 @@ public class TeethReparing : MonoBehaviour
                     brownDamagedTeethLayer[i].transform.parent = downParent;
                 }
             }
+            StartCoroutine(AfterTaskColliderAndIndicationsOn());
         }
         else if(action == TeethReparingActionPerform.FirstDrill)
         {
             taskDoneParticle.gameObject.SetActive(true);
-            AfterTaskDonePerform();
             StartCoroutine(EnableOrDisable(0.5f, firstDrill, false));
-            action = TeethReparingActionPerform.SecondDrill;
             StartCoroutine(EnableOrDisable(0.5f, secondDrill, true));
-
+            AfterTaskDonePerform();
             for (int i = 0; i < blackDamagedTeethLayer.Length; i++)
             {
                 blackDamagedTeethLayer[i].transform.GetChild(0).gameObject.SetActive(true);
@@ -188,68 +177,114 @@ public class TeethReparing : MonoBehaviour
                 {
                     blackDamagedTeethLayer[i].transform.parent = downParent;
                 }
-                blackDamagedTeethLayer[i].transform.GetComponent<PolygonCollider2D>().enabled = true;
             }
-            
+            StartCoroutine(AfterTaskColliderAndIndicationsOn());
         }
         else if(action == TeethReparingActionPerform.SecondDrill)
         {
             taskDoneParticle.gameObject.SetActive(true);
-            AfterTaskDonePerform();
             StartCoroutine(EnableOrDisable(0.5f, secondDrill, false));
-            action = TeethReparingActionPerform.FillSpoon;
             StartCoroutine(EnableOrDisable(0.5f, spoonWithPot, true));
-
+            AfterTaskDonePerform();
             for (int i = 0; i < yellowDamagedTeethLayer.Length; i++)
             {
                 yellowDamagedTeethLayer[i].transform.GetChild(0).gameObject.SetActive(true);
-                //print(i);
-                //yellowDamagedTeeth[i].transform.GetComponent<PolygonCollider2D>().enabled = true;
                 if (downParent)
                 {
                     yellowDamagedTeethLayer[i].transform.parent = downParent;
                 }
             }
-            for (int i = 0; i < yellowDamagedTeeth.Length; i++)
-            {
-                print(i);
-                yellowDamagedTeeth[i].transform.GetComponent<PolygonCollider2D>().enabled = true;
-            }
+            StartCoroutine(AfterTaskColliderAndIndicationsOn());
         }
         else if(action == TeethReparingActionPerform.FillSpoon)
         {
             taskDoneParticle.gameObject.SetActive(true);
-            AfterTaskDonePerform();
-            StartCoroutine(EnableOrDisable(0.5f, spoonWithPot, false));
             action = TeethReparingActionPerform.TeethLaser;
+            StartCoroutine(EnableOrDisable(0.5f, spoonWithPot, false));
             StartCoroutine(EnableOrDisable(0.5f, teethLaser, true));
-
+            AfterTaskDonePerform();
         }
         else if(action == TeethReparingActionPerform.TeethLaser)
         {
             taskDoneParticle.gameObject.SetActive(true);
+            action = TeethReparingActionPerform.PourWater;
             StartCoroutine(EnableOrDisable(0.5f, teethLaser, false));
+            StartCoroutine(EnableOrDisable(0.5f, waterPipe, true));
+            tray.SetActive(false);
             dirtyTeethLayer.SetActive(false);
             openMouth.sprite = cleanTeethLayer;
+            AfterTaskDonePerform();
+
+        }
+        else if (action == TeethReparingActionPerform.PourWater)
+        {
+            taskDoneParticle.gameObject.SetActive(true);
+            action = TeethReparingActionPerform.WateringOut;
+            waterLayer.SetActive(false);
+            pumpWaterLayer.SetActive(true);
+            StartCoroutine(EnableOrDisable(0.5f, waterPipe, false));
+            StartCoroutine(EnableOrDisable(0.5f, waterOutPump, true));
+            AfterTaskDonePerform();
+        }
+        else if (action == TeethReparingActionPerform.WateringOut)
+        {
+            taskDoneParticle.gameObject.SetActive(true);
+            StartCoroutine(EnableOrDisable(0.5f, waterOutPump, false));
             StartCoroutine(EnableOrDisable(0.5f, teethShine, true));
+            //dirtyTeethLayer.SetActive(false);
+            //openMouth.sprite = cleanTeethLayer;
             print("All Task Done");
             StartCoroutine(LevelComplete());
         }
-
     }
 
-    private void AfterTaskDonePerform()
+    IEnumerator AfterTaskColliderAndIndicationsOn()
     {
-        StartCoroutine(EnableOrDisable(2f, taskDoneParticle.gameObject, false));
-        taskFillbar.fillAmount = 0f;
-        for (int i = 0; i < starImages.Length; i++)
+        yield return new WaitForSeconds(1f);
+        for (int i = 0; i < 6; i++)
         {
-            starImages[i].sprite = grayStarSprite;
+            if (action == TeethReparingActionPerform.Excavator)
+            {
+                brownDamagedTeethLayer[i].transform.GetComponent<PolygonCollider2D>().enabled = true;
+            }
+            else if (action == TeethReparingActionPerform.FirstDrill)
+            {
+                blackDamagedTeethLayer[i].transform.GetComponent<PolygonCollider2D>().enabled = true;
+            }
+            else if (action == TeethReparingActionPerform.SecondDrill)
+            {
+                yellowDamagedTeethLayer[i].transform.GetComponent<PolygonCollider2D>().enabled = true;
+            }
+                
         }
+        StartCoroutine(ChangeActionType());
     }
+    IEnumerator ChangeActionType()
+    {
+        yield return new WaitForSeconds(1f);
+
+        if (action == TeethReparingActionPerform.Excavator)
+        {
+            action = TeethReparingActionPerform.FirstDrill;
+        }
+        else if (action == TeethReparingActionPerform.FirstDrill)
+        {
+            action = TeethReparingActionPerform.SecondDrill;
+        }
+        else if (action == TeethReparingActionPerform.SecondDrill)
+        {
+            action = TeethReparingActionPerform.FillSpoon;
+        }
+
+    }
+    #endregion
+
+    #region Funcations
+
+    #region First Task
+    // First Task Tray Image On 1 by 1
     public void ObjectEnable(int index)
     {
-
         if (index == 0)
         {
             if (trayImages[0].gameObject.activeSelf)
@@ -310,6 +345,16 @@ public class TeethReparing : MonoBehaviour
         }
         StartCoroutine(TrayIEnumerator());
     }
+    #endregion
+    private void AfterTaskDonePerform()
+    {
+        StartCoroutine(EnableOrDisable(2f, taskDoneParticle.gameObject, false));
+        taskFillbar.fillAmount = 0f;
+        for (int i = 0; i < starImages.Length; i++)
+        {
+            starImages[i].sprite = grayStarSprite;
+        }
+    }
     public void TaskFillBar()
     {
         if (taskFillbar.fillAmount >= 0.2f)
@@ -325,20 +370,9 @@ public class TeethReparing : MonoBehaviour
             }
         }
     }
-
-
-    #region EnableOrDisable
-    IEnumerator EnableOrDisable(float _Delay, GameObject activateObject, bool isTrue)
-    {
-        yield return new WaitForSecondsRealtime(_Delay);
-        activateObject.SetActive(isTrue);
-    }
-    IEnumerator EnableAnim(float _Delay, Animator activateObject)
-    {
-        yield return new WaitForSecondsRealtime(_Delay);
-        activateObject.enabled = true;
-    }
     #endregion
+
+    #region IEnumerators
     IEnumerator TrayIEnumerator()
     {
         yield return new WaitForSeconds(0.5f);
@@ -346,7 +380,7 @@ public class TeethReparing : MonoBehaviour
     }
     IEnumerator LevelComplete()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(3f);
         StartCoroutine(EnableOrDisable(0.5f, levelCompletePanel, true));
         StartCoroutine(EnableOrDisable(0.7f, finalParticle, true));
     }
@@ -364,4 +398,18 @@ public class TeethReparing : MonoBehaviour
         asyncLoad.allowSceneActivation = true;
 
     }
+    #endregion
+
+    #region EnableOrDisable
+    IEnumerator EnableOrDisable(float _Delay, GameObject activateObject, bool isTrue)
+    {
+        yield return new WaitForSecondsRealtime(_Delay);
+        activateObject.SetActive(isTrue);
+    }
+    IEnumerator EnableAnim(float _Delay, Animator activateObject)
+    {
+        yield return new WaitForSecondsRealtime(_Delay);
+        activateObject.enabled = true;
+    }
+    #endregion
 }

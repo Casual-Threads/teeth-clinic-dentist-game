@@ -590,7 +590,7 @@ public class DragCGS : MonoBehaviour
             {
                 gameObject.transform.GetComponent<Animator>().enabled = true;
                 gameObject.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(true);
-                TeethReparingController.drillSFX.Play();
+                //TeethReparingController.drillSFX.Play();
 
                 if (col.gameObject.tag == "BlackDamagedTeethTag")
                 {
@@ -631,7 +631,7 @@ public class DragCGS : MonoBehaviour
                     isyellow = false;
                     isblack = false;
                     TeethReparingController.TaskDone();
-                    SoundStopSFX.Invoke();
+                    //SoundStopSFX.Invoke();
                 }
             }
 
@@ -683,32 +683,19 @@ public class DragCGS : MonoBehaviour
                 }
             }
 
-
-
             else if (col.gameObject.tag == "GreenDotTag" && gameObject.name == "TeethLaser")
             {
                 TeethReparingController.teethLaserSFX.Play();
                 //col.transform.GetChild(0).gameObject.SetActive(false);
                 if (col.gameObject.tag == "GreenDotTag")
                 {
-                    col.transform.DOScale(new Vector3(0f, 0f, 0f), 1f);
+                    col.transform.DOScale(new Vector3(0f, 0f, 0f), 3f);
                     {
                         col.enabled = false;
-                        TeethReparingController.taskFillbar.fillAmount += 0.0834f;
-                        if (TeethReparingController.taskFillbar.fillAmount >= 0.2f)
-                        {
-                            TeethReparingController.starImages[0].sprite = TeethReparingController.goldStarSprite;
-                            if (TeethReparingController.taskFillbar.fillAmount >= 0.5f)
-                            {
-                                TeethReparingController.starImages[1].sprite = TeethReparingController.goldStarSprite;
-                                if (TeethReparingController.taskFillbar.fillAmount >= 0.83f)
-                                {
-                                    TeethReparingController.starImages[2].sprite = TeethReparingController.goldStarSprite;
-                                }
-                            }
-                        }
+                        TeethReparingController.taskFillbar.fillAmount += 0.25f;
+                        TeethReparingController.TaskFillBar();
                         index++;
-                        if (index == 12)
+                        if (index == 4)
                         {
                             index = 0;
                             TeethReparingController.TaskDone();
@@ -717,13 +704,54 @@ public class DragCGS : MonoBehaviour
                     }
                 }
             }
+            else if (col.gameObject.name == "WaterLayer" && gameObject.name == "WaterPipe")
+            {
+                TeethReparingController.teethLaserSFX.Play();
+                gameObject.transform.GetChild(0).gameObject.SetActive(true);
+                if (col.gameObject.name == "WaterLayer")
+                {
+                    col.GetComponent<Image>().color = new Color(1, 1, 1, col.GetComponent<Image>().color.a + 0.2f);
+                    if (col.GetComponent<Image>().color.a >= 1)
+                    {
+                        col.enabled = false;
+                        TeethReparingController.taskFillbar.fillAmount += 1f;
+                        TeethReparingController.TaskFillBar();
+                        index++;
+                        if (index == 1)
+                        {
+                            index = 0;
+                            TeethReparingController.TaskDone();
+                        }
+
+                    }
+                }
+            }
+            else if (col.gameObject.name == "WaterForPump" && gameObject.name == "WateringOutPump")
+            {
+                print("yes");
+                TeethReparingController.teethLaserSFX.Play();
+                gameObject.transform.gameObject.SetActive(false);
+                TeethReparingController.secondWaterOutPump.SetActive(true);
+                if (col.gameObject.name == "WaterForPump")
+                {
+                    col.transform.DOScale(new Vector3(0f, 0f, 0f), 5f);
+                    col.enabled = false;
+                    Invoke("LastTask", 5f);
+                }
+            }
         }
         #endregion
     }
-    private void OnTriggerStay2D(Collider2D collision)
+    public void LastTask()
     {
-        inTrigger = true;
-        if (MouseDownIndicator) MouseDownIndicator.SetActive(false);
+        TeethReparingController.taskFillbar.fillAmount += 1f;
+        TeethReparingController.TaskFillBar();
+        index++;
+        if (index == 1)
+        {
+            index = 0;
+            TeethReparingController.TaskDone();
+        }
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
@@ -731,25 +759,18 @@ public class DragCGS : MonoBehaviour
         {
             gameObject.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(false);
         }
-        //if (TeethCleaningController)
-        //{
-        //    TeethCleaningController.burshSFX.Stop();
-        //    TeethCleaningController.excavatorSFX.Stop();
-        //    TeethCleaningController.grinderSFX.Stop();
-        //    TeethCleaningController.drillSFX.Stop();
-        //    TeethCleaningController.chewPullerSFX.Stop();
-        //    TeethCleaningController.teethLaserSFX.Stop();
-        //}
-        //else if (TeethReparingController)
-        //{
-        //    TeethReparingController.burshSFX.Stop();
-        //    TeethReparingController.excavatorSFX.Stop();
-        //    TeethReparingController.drillSFX.Stop();
-        //    TeethReparingController.teethLaserSFX.Stop();
-        //}
+        else if (collision.gameObject.name == "WaterLayer" && gameObject.name == "WaterPipe")
+        {
+            gameObject.transform.GetChild(0).gameObject.SetActive(false);
+        }
 
         inTrigger = false;
         if (MouseDownIndicator) MouseDownIndicator.SetActive(true);
+    }
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        inTrigger = true;
+        if (MouseDownIndicator) MouseDownIndicator.SetActive(false);
     }
     private void OnEnable()
     {
@@ -796,6 +817,12 @@ public class DragCGS : MonoBehaviour
         if (boxCollider) boxCollider.enabled = false;
         if (MouseDownIndicator) MouseDownIndicator.SetActive(false);
         if (MouseUpIndicator) MouseUpIndicator.SetActive(false);
+    }
+
+    IEnumerator EnableOrDisable(float _Delay, GameObject activateObject, bool isTrue)
+    {
+        yield return new WaitForSecondsRealtime(_Delay);
+        activateObject.SetActive(isTrue);
     }
 
 }
