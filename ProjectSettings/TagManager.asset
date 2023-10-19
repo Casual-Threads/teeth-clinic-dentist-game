@@ -19,6 +19,7 @@ TagManager:
   - BlackDamagedTeethTag
   - YellowDamagedTeethTag
   - WhiteDamagedTeethTag
+  - CmpareTag
   layers:
   - Default
   - TransparentFX

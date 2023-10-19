@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 [System.Serializable]
 public enum TeethReparingActionPerform
 {
-    none, Clipper, Brush, Excavator, FirstDrill, SecondDrill, FillSpoon, TeethLaser, PourWater, WateringOut
+    none, Clipper, Brush, Excavator, FirstDrill, SecondDrill, FillSpoon, TeethLaser, PourWater, WateringOut, Germs
 }
 
 public class TeethReparing : MonoBehaviour
@@ -34,8 +34,8 @@ public class TeethReparing : MonoBehaviour
     public GameObject tray;
     public GameObject emptyTray, dirtyTeethLayer, whiteTeethLayer, teethShine, waterLayer, pumpWaterLayer, secondWaterOutPump;
     [Header("Panels")]
-    public GameObject TeethReparingPanel;
-    public GameObject levelCompletePanel, settingPanel, RateUsPanel, loadingPanel;
+    public GameObject teethReparingPanel;
+    public GameObject levelCompletePanel, settingPanel, RateUsPanel, loadingPanel, germsPanel, darkPanel;
     [Header("Images")]
     public Image openMouth;
     public Image taskFillbar, loadingFillbar, lightImage, lightWhiteLayer, musicOnOffBtn, vibrationOnOffBtn;
@@ -229,7 +229,22 @@ public class TeethReparing : MonoBehaviour
         else if (action == TeethReparingActionPerform.WateringOut)
         {
             taskDoneParticle.gameObject.SetActive(true);
-            StartCoroutine(EnableOrDisable(0.5f, waterOutPump, false));
+            action = TeethReparingActionPerform.Germs;
+            StartCoroutine(EnableOrDisable(0.3f, waterOutPump, false));
+            StartCoroutine(EnableOrDisable(0.3f, teethReparingPanel, false));
+            StartCoroutine(EnableOrDisable(0.5f, germsPanel, true));
+            StartCoroutine(EnableOrDisable(0.5f, darkPanel, true));
+            //dirtyTeethLayer.SetActive(false);
+            //openMouth.sprite = cleanTeethLayer;
+            //print("All Task Done");
+            //StartCoroutine(LevelComplete());
+        }
+        else if (action == TeethReparingActionPerform.Germs)
+        {
+            taskDoneParticle.gameObject.SetActive(true);
+            action = TeethReparingActionPerform.Germs;
+            StartCoroutine(EnableOrDisable(0.5f, germsPanel, false));
+            StartCoroutine(EnableOrDisable(0.5f, darkPanel, false));
             StartCoroutine(EnableOrDisable(0.5f, teethShine, true));
             //dirtyTeethLayer.SetActive(false);
             //openMouth.sprite = cleanTeethLayer;

@@ -16,4 +16,5 @@ public class DragMagnifyingGlass : MonoBehaviour
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         transform.position = mousePosition - dragOffset;
     }
+
 }

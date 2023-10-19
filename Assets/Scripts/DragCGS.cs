@@ -25,11 +25,13 @@ public class DragCGS : MonoBehaviour
     private Animator m_Animator;
     private int didTrigger;
     private bool inTrigger = false;
-    private bool isSingleTeethOff, isYellowTeethOff, isReparedTeethOn , isbrown, isblack, isyellow;
+    private bool isYellowTeethOff, isReparedTeethOn , isbrown, isblack, isyellow;
+    private bool isPinkGermOff, isBlueGermOff, isGreenGermOff, isOrangeGermOff;
  
     public Transform  downParent;
     TeethCleaning TeethCleaningController;
     TeethReparing TeethReparingController;
+    TeethBraces TeethBracesController;
     public UnityEvent MouseDown;
     public UnityEvent MouseUp;
     public UnityEvent SoundPlaySFX;
@@ -43,6 +45,7 @@ public class DragCGS : MonoBehaviour
     {
         TeethCleaningController = FindObjectOfType<TeethCleaning>();
         TeethReparingController = FindObjectOfType<TeethReparing>();
+        TeethBracesController = FindObjectOfType<TeethBraces>();
         restPos = true;
         boxCollider = GetComponent<BoxCollider2D>();
         pingPong = GetComponent<ScalePingPong>();
@@ -137,7 +140,6 @@ public class DragCGS : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D col)
     {
-        
         #region Teeth Cleaning
         if (TeethCleaningController)
         {
@@ -635,14 +637,14 @@ public class DragCGS : MonoBehaviour
                 }
             }
 
-            else if(col.gameObject.name == "Pot" && gameObject.name == "Spoon")
+            else if (col.gameObject.name == "Pot" && gameObject.name == "Spoon")
             {
                 col.gameObject.transform.GetComponent<Animator>().enabled = true;
                 col.transform.GetChild(0).gameObject.SetActive(true);
                 gameObject.SetActive(false);
 
             }
-            else if((col.gameObject.tag == "YellowDamagedTeethTag" || col.gameObject.tag == "WhiteDamagedTeethTag") && gameObject.name == "SpoonOne")
+            else if ((col.gameObject.tag == "YellowDamagedTeethTag" || col.gameObject.tag == "WhiteDamagedTeethTag") && gameObject.name == "SpoonOne")
             {
                 if (col.gameObject.tag == "YellowDamagedTeethTag")
                 {
@@ -741,7 +743,477 @@ public class DragCGS : MonoBehaviour
             }
         }
         #endregion
+
+        #region Teeth Braces
+
+        if (TeethBracesController)
+        {
+            if (col.gameObject.name == "EmptyTray" && gameObject.name == "ToffeeAnim")
+            {
+                gameObject.SetActive(false);
+                TeethBracesController.ObjectEnable(0);
+            }
+            else if (col.gameObject.name == "EmptyTray" && gameObject.name == "LemonAnim")
+            {
+                gameObject.SetActive(false);
+                TeethBracesController.ObjectEnable(1);
+            }
+            else if (col.gameObject.name == "EmptyTray" && gameObject.name == "FishAnim")
+            {
+                gameObject.SetActive(false);
+                TeethBracesController.ObjectEnable(2);
+            }
+            else if (col.gameObject.name == "EmptyTray" && gameObject.name == "StrawberryAnim")
+            {
+                gameObject.SetActive(false);
+                TeethBracesController.ObjectEnable(3);
+            }
+            else if (col.gameObject.name == "EmptyTray" && gameObject.name == "BubbleAnim")
+            {
+                gameObject.SetActive(false);
+                TeethBracesController.ObjectEnable(4);
+            }
+            else if (col.gameObject.name == "Toffee" && gameObject.name == "Clipper")
+            {
+                TeethBracesController.emptyTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
+                col.gameObject.transform.GetComponent<BoxCollider2D>().enabled = false;
+                col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
+                col.transform.GetChild(0).gameObject.SetActive(true);
+                if (downParent)
+                {
+                    col.transform.GetChild(0).parent = downParent;
+                }
+                TeethBracesController.TaskDone();
+            }
+            else if (col.gameObject.name == "Lemon" && gameObject.name == "Clipper")
+            {
+                TeethBracesController.emptyTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
+                col.gameObject.transform.GetComponent<PolygonCollider2D>().enabled = false;
+                col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
+                col.transform.GetChild(0).gameObject.SetActive(true);
+                if (downParent)
+                {
+                    col.transform.GetChild(0).parent = downParent;
+                }
+                TeethBracesController.TaskDone();
+            }
+            else if (col.gameObject.name == "FishBone" && gameObject.name == "Clipper")
+            {
+                TeethBracesController.emptyTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
+                col.gameObject.transform.GetComponent<PolygonCollider2D>().enabled = false;
+                col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
+                col.transform.GetChild(0).gameObject.SetActive(true);
+                if (downParent)
+                {
+                    col.transform.GetChild(0).parent = downParent;
+                }
+                TeethBracesController.TaskDone();
+            }
+            else if (col.gameObject.name == "Strawberry" && gameObject.name == "Clipper")
+            {
+                TeethBracesController.emptyTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
+                col.gameObject.transform.GetComponent<PolygonCollider2D>().enabled = false;
+                col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
+                col.transform.GetChild(0).gameObject.SetActive(true);
+                if (downParent)
+                {
+                    col.transform.GetChild(0).parent = downParent;
+                }
+                TeethBracesController.TaskDone();
+            }
+            else if (col.gameObject.name == "BubbleGum" && gameObject.name == "Clipper")
+            {
+                TeethBracesController.emptyTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
+                col.gameObject.transform.GetComponent<PolygonCollider2D>().enabled = false;
+                col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
+                col.transform.GetChild(0).gameObject.SetActive(true);
+                if (downParent)
+                {
+                    col.transform.GetChild(0).parent = downParent;
+                }
+                TeethBracesController.TaskDone();
+            }
+            else if ((col.gameObject.tag == "SingleTeethTag" || col.gameObject.tag == "EmptyTag") && gameObject.name == "Brush")
+            {
+                //Debug.LogError("yes");                
+                gameObject.transform.GetChild(0).GetChild(0).gameObject.SetActive(true);
+                //TeethReparingController.burshSFX.Play();
+                SoundPlaySFX.Invoke();
+                if (col.gameObject.tag == "SingleTeethTag")
+                {
+                    col.GetComponent<Image>().color = new Color(1, 1, 1, 1);
+
+                    if (col.GetComponent<Image>().color == new Color(1, 1, 1, 1))
+                    {
+                        //print("ok");
+                        col.enabled = false;
+                        col.GetComponent<PolygonCollider2D>().enabled = false;
+                        TeethBracesController.taskFillbar.fillAmount += 0.0833f;
+                        TeethBracesController.TaskFillBar();
+                        index++;
+                        if (index == 12)
+                        {
+                            isReparedTeethOn = true;
+                            print("is repared teeth " + isReparedTeethOn);
+                            index = 0;
+                        }
+
+                    }
+                }
+                if (col.gameObject.tag == "EmptyTag")
+                {
+                    col.transform.GetChild(0).GetComponent<Image>().color = new Color(1, 1, 1, 1);
+
+                    if (col.transform.GetChild(0).GetComponent<Image>().color == new Color(1, 1, 1, 1))
+                    {
+                        col.enabled = false;
+                        col.GetComponent<PolygonCollider2D>().enabled = false;
+                        emptyIndex++;
+                        if (emptyIndex == 2)
+                        {
+                            isYellowTeethOff = true;
+                            print("is YellowTeeth Off  " + isYellowTeethOff);
+                            emptyIndex = 0;
+                        }
+                    }
+
+                }
+                if (isReparedTeethOn == true &&  isYellowTeethOff == true)
+                {
+                    Debug.LogError("yes");
+                    SoundStopSFX.Invoke();
+                    TeethBracesController.TaskDone();
+                }
+            }
+            else if (col.gameObject.tag == "DurtTag" && gameObject.name == "Excavator")
+            {
+                gameObject.transform.GetChild(0).GetChild(0).gameObject.SetActive(true);
+                TeethBracesController.excavatorSFX.Play();
+                if (col.gameObject.tag == "DurtTag")
+                {
+                    col.GetComponent<Image>().color = new Color(1, 1, 1, col.GetComponent<Image>().color.a - 0.2f);
+                    if (col.GetComponent<Image>().color.a <= 0)
+                    {
+                        col.transform.GetChild(0).gameObject.SetActive(false);
+                        col.enabled = false;
+                        TeethBracesController.taskFillbar.fillAmount += 0.25f;
+                        TeethBracesController.TaskFillBar();
+                        index++;
+                        if (index == 4)
+                        {
+                            index = 0;
+                            TeethBracesController.TaskDone();
+                            SoundStopSFX.Invoke();
+                        }
+
+                    }
+                }
+            }
+            else if ((col.gameObject.tag == "DamagedTeethTag" || col.gameObject.tag == "BlackDamagedTeethTag") && gameObject.name == "MiniMicro")
+            {
+                print("ok");
+                //gameObject.transform.GetComponent<Animator>().enabled = true;
+                //TeethBracesController.drillSFX.Play();
+
+                if (col.gameObject.tag == "DamagedTeethTag")
+                {
+                    col.GetComponent<Image>().color = new Color(1, 1, 1, col.GetComponent<Image>().color.a + 0.2f);
+                    if (col.GetComponent<Image>().color.a >= 1)
+                    {
+                        col.transform.GetChild(0).gameObject.SetActive(false);
+                        col.enabled = false;
+                        TeethBracesController.taskFillbar.fillAmount += 0.1667f;
+                        TeethBracesController.TaskFillBar();
+                        index++;
+                        if (index == 6)
+                        {
+                            isbrown = true;
+                            index = 0;
+                        }
+
+                    }
+                }
+                if (col.gameObject.tag == "BlackDamagedTeethTag")
+                {
+                    col.GetComponent<Image>().color = new Color(1, 1, 1, col.GetComponent<Image>().color.a - 0.2f);
+                    if (col.GetComponent<Image>().color.a <= 0)
+                    {
+                        col.enabled = false;
+                        blackIndex++;
+                        if (blackIndex == 6)
+                        {
+                            isblack = true;
+                            blackIndex = 0;
+                        }
+
+                    }
+                }
+                if ((TeethBracesController.taskFillbar.fillAmount == 1 && isbrown == true) && isblack == true)
+                {
+                    isblack = false;
+                    TeethBracesController.TaskDone();
+                    SoundStopSFX.Invoke();
+                }
+            }
+
+            else if ((col.gameObject.tag == "BlackDamagedTeethTag" || col.gameObject.tag == "YellowDamagedTeethTag") && gameObject.name == "SecondDrill")
+            {
+                gameObject.transform.GetComponent<Animator>().enabled = true;
+                gameObject.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(true);
+                //TeethReparingController.drillSFX.Play();
+
+                if (col.gameObject.tag == "BlackDamagedTeethTag")
+                {
+                    col.GetComponent<Image>().color = new Color(1, 1, 1, col.GetComponent<Image>().color.a - 0.2f);
+                    if (col.GetComponent<Image>().color.a <= 0)
+                    {
+                        col.transform.GetChild(0).gameObject.SetActive(false);
+                        col.enabled = false;
+                        blackIndex++;
+                        if (blackIndex == 6)
+                        {
+                            isblack = true;
+                            blackIndex = 0;
+                        }
+
+                    }
+                }
+                if (col.gameObject.tag == "YellowDamagedTeethTag")
+                {
+                    col.GetComponent<Image>().color = new Color(1, 1, 1, col.GetComponent<Image>().color.a + 0.2f);
+                    if (col.GetComponent<Image>().color.a >= 1)
+                    {
+                        col.enabled = false;
+                        TeethReparingController.taskFillbar.fillAmount += 0.1667f;
+                        TeethReparingController.TaskFillBar();
+                        index++;
+                        if (index == 6)
+                        {
+                            isyellow = true;
+                            index = 0;
+                        }
+
+                    }
+                }
+                if ((TeethReparingController.taskFillbar.fillAmount == 1 && isyellow == true) && isblack == true)
+                {
+                    TeethReparingController.drillSFX.Stop();
+                    isyellow = false;
+                    isblack = false;
+                    TeethReparingController.TaskDone();
+                    //SoundStopSFX.Invoke();
+                }
+            }
+
+            else if (col.gameObject.name == "Pot" && gameObject.name == "Spoon")
+            {
+                col.gameObject.transform.GetComponent<Animator>().enabled = true;
+                col.transform.GetChild(0).gameObject.SetActive(true);
+                gameObject.SetActive(false);
+
+            }
+            else if ((col.gameObject.tag == "YellowDamagedTeethTag" || col.gameObject.tag == "WhiteDamagedTeethTag") && gameObject.name == "SpoonOne")
+            {
+                if (col.gameObject.tag == "YellowDamagedTeethTag")
+                {
+                    col.GetComponent<Image>().color = new Color(1, 1, 1, col.GetComponent<Image>().color.a - 0.2f);
+                    if (col.GetComponent<Image>().color.a <= 0)
+                    {
+                        col.enabled = false;
+                        col.transform.GetChild(0).gameObject.SetActive(false);
+                        blackIndex++;
+                        if (blackIndex == 6)
+                        {
+                            isblack = true;
+                            blackIndex = 0;
+                        }
+
+                    }
+                }
+                if (col.gameObject.tag == "WhiteDamagedTeethTag")
+                {
+                    col.GetComponent<Image>().color = new Color(1, 1, 1, col.GetComponent<Image>().color.a + 0.2f);
+                    if (col.GetComponent<Image>().color.a >= 1)
+                    {
+                        col.enabled = false;
+                        TeethReparingController.taskFillbar.fillAmount += 0.167f;
+                        TeethReparingController.TaskFillBar();
+                        index++;
+                        if (index == 6)
+                        {
+                            isyellow = true;
+                            index = 0;
+                        }
+
+                    }
+                }
+                if (isyellow == true && isblack == true)
+                {
+                    TeethReparingController.TaskDone();
+                }
+            }
+
+            else if (col.gameObject.tag == "GreenDotTag" && gameObject.name == "TeethLaser")
+            {
+                TeethReparingController.teethLaserSFX.Play();
+                //col.transform.GetChild(0).gameObject.SetActive(false);
+                if (col.gameObject.tag == "GreenDotTag")
+                {
+                    col.transform.DOScale(new Vector3(0f, 0f, 0f), 3f);
+                    {
+                        col.enabled = false;
+                        TeethReparingController.taskFillbar.fillAmount += 0.25f;
+                        TeethReparingController.TaskFillBar();
+                        index++;
+                        if (index == 4)
+                        {
+                            index = 0;
+                            TeethReparingController.TaskDone();
+                        }
+
+                    }
+                }
+            }
+            else if (col.gameObject.name == "WaterLayer" && gameObject.name == "WaterPipe")
+            {
+                TeethReparingController.teethLaserSFX.Play();
+                gameObject.transform.GetChild(0).gameObject.SetActive(true);
+                if (col.gameObject.name == "WaterLayer")
+                {
+                    col.GetComponent<Image>().color = new Color(1, 1, 1, col.GetComponent<Image>().color.a + 0.2f);
+                    if (col.GetComponent<Image>().color.a >= 1)
+                    {
+                        col.enabled = false;
+                        TeethReparingController.taskFillbar.fillAmount += 1f;
+                        TeethReparingController.TaskFillBar();
+                        index++;
+                        if (index == 1)
+                        {
+                            index = 0;
+                            TeethReparingController.TaskDone();
+                        }
+
+                    }
+                }
+            }
+            else if (col.gameObject.name == "WaterForPump" && gameObject.name == "WateringOutPump")
+            {
+                print("yes");
+                TeethReparingController.teethLaserSFX.Play();
+                gameObject.transform.gameObject.SetActive(false);
+                TeethReparingController.secondWaterOutPump.SetActive(true);
+                if (col.gameObject.name == "WaterForPump")
+                {
+                    col.transform.DOScale(new Vector3(0f, 0f, 0f), 5f);
+                    col.enabled = false;
+                    Invoke("LastTask", 5f);
+                }
+            }
+        }
+        #endregion
+
+        #region Germs Killing
+        if (col.gameObject.name == "MagnifyingGlass" && gameObject.name == "PinkGermParent")
+        {
+            gameObject.transform.GetComponent<PolygonCollider2D>().enabled = false;
+            gameObject.transform.GetChild(0).GetComponent<PolygonCollider2D>().enabled = true;
+            gameObject.transform.GetComponent<PolygonCollider2D>().isTrigger = false;
+            //print("yes");
+        }
+        else if (col.gameObject.name == "PinkGerm" && gameObject.name == "PinkGermsKiller")
+        {
+            if (col.gameObject.name == "PinkGerm")
+            {
+                col.enabled = false;
+                TeethReparingController.teethLaserSFX.Play();
+                col.transform.DOScale(new Vector3(0f, 0f, 0f), 1f);
+                {
+                    TeethReparingController.taskFillbar.fillAmount += 0.125f;
+                    TeethReparingController.TaskFillBar();
+                    index++;
+                    if (index == 2)
+                    {
+                        isPinkGermOff = true;
+                        index = 0;
+                    }
+
+                }
+            }
+        }
+        else if (col.gameObject.name == "BlueGerm" && gameObject.name == "BlueGermsKiller")
+        {
+            //col.transform.GetChild(0).gameObject.SetActive(false);
+            if (col.gameObject.name == "BlueGerm")
+            {
+                TeethReparingController.teethLaserSFX.Play();
+                col.transform.DOScale(new Vector3(0f, 0f, 0f), 1f);
+                {
+                    col.enabled = false;
+                    TeethReparingController.taskFillbar.fillAmount += 0.125f;
+                    TeethReparingController.TaskFillBar();
+                    index++;
+                    if (index == 2)
+                    {
+                        index = 0;
+                        isBlueGermOff = true;
+                    }
+
+                }
+            }
+        }
+        else if (col.gameObject.name == "GreenGerm" && gameObject.name == "GreenGermsKiller")
+        {
+            TeethReparingController.teethLaserSFX.Play();
+            //col.transform.GetChild(0).gameObject.SetActive(false);
+            if (col.gameObject.name == "GreenGerm")
+            {
+                col.transform.DOScale(new Vector3(0f, 0f, 0f), 1f);
+                {
+                    col.enabled = false;
+                    TeethReparingController.taskFillbar.fillAmount += 0.125f;
+                    TeethReparingController.TaskFillBar();
+                    index++;
+                    if (index == 2)
+                    {
+                        index = 0;
+                        isGreenGermOff = true;
+                    }
+
+                }
+            }
+        }
+        else if (col.gameObject.name == "OrangeGerm" && gameObject.name == "OrangeGermsKiller")
+        {
+            TeethReparingController.teethLaserSFX.Play();
+            //col.transform.GetChild(0).gameObject.SetActive(false);
+            if (col.gameObject.name == "OrangeGerm")
+            {
+                col.transform.DOScale(new Vector3(0f, 0f, 0f), 1f);
+                {
+                    col.enabled = false;
+                    TeethReparingController.taskFillbar.fillAmount += 0.125f;
+                    TeethReparingController.TaskFillBar();
+                    index++;
+                    if (index == 2)
+                    {
+                        index = 0;
+                        isOrangeGermOff = true;
+                        //TeethReparingController.TaskDone();
+                    }
+
+                }
+            }
+        }
+        #endregion
     }
+
+    public void GermsTaskDone()
+    {
+        if(isPinkGermOff == true && isBlueGermOff == true && isGreenGermOff == true && isOrangeGermOff == true)
+        {
+            TeethReparingController.TaskDone();
+        }
+    } 
     public void LastTask()
     {
         TeethReparingController.taskFillbar.fillAmount += 1f;
@@ -755,13 +1227,22 @@ public class DragCGS : MonoBehaviour
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if ((collision.gameObject.tag == "BlackDamagedTeethTag" || collision.gameObject.tag == "YellowDamagedTeethTag") && gameObject.name == "SecondDrill")
+        if (TeethReparingController)
         {
-            gameObject.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(false);
+            if ((collision.gameObject.tag == "BlackDamagedTeethTag" || collision.gameObject.tag == "YellowDamagedTeethTag") && gameObject.name == "SecondDrill")
+            {
+                gameObject.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(false);
+            }
+            else if (collision.gameObject.name == "WaterLayer" && gameObject.name == "WaterPipe")
+            {
+                gameObject.transform.GetChild(0).gameObject.SetActive(false);
+            }
         }
-        else if (collision.gameObject.name == "WaterLayer" && gameObject.name == "WaterPipe")
+        else if (collision.gameObject.name == "MagnifyingGlass" && gameObject.name == "PinkGermParent")
         {
-            gameObject.transform.GetChild(0).gameObject.SetActive(false);
+            gameObject.transform.GetComponent<PolygonCollider2D>().enabled = true;
+            gameObject.transform.GetChild(0).GetComponent<PolygonCollider2D>().enabled = false;
+            print("yes");
         }
 
         inTrigger = false;
@@ -771,6 +1252,11 @@ public class DragCGS : MonoBehaviour
     {
         inTrigger = true;
         if (MouseDownIndicator) MouseDownIndicator.SetActive(false);
+
+        //if (collision.gameObject.name == "PinkGerm" && gameObject.name == "PinkGermsKiller")
+        //{
+
+        //}
     }
     private void OnEnable()
     {
