@@ -20,6 +20,8 @@ TagManager:
   - YellowDamagedTeethTag
   - WhiteDamagedTeethTag
   - CmpareTag
+  - BraceTaryTag
+  - BraceSTag
   layers:
   - Default
   - TransparentFX
