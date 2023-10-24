@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 [System.Serializable]
 public enum TeethBracesActionPerform
 {
-    none, Clipper, Brush, Excavator, MiniMicro, TeethCutter, NewTeethInsert, Brace, TeethLaser, PourWater, WateringOut, Germs
+    none, Clipper, Brush, Excavator, MiniMicro, TeethCutter, NewTeethInsert, Brace, TeethLaser, Germs
 }
 
 public class TeethBraces : MonoBehaviour
@@ -183,7 +183,9 @@ public class TeethBraces : MonoBehaviour
             taskDoneParticle.gameObject.SetActive(true);
             //action = TeethReparingActionPerform.PourWater;
             StartCoroutine(ObjectEnableOrDisable(0.5f, teethLaser, false));
-            //StartCoroutine(EnableOrDisable(0.5f, waterPipe, true));
+            StartCoroutine(ObjectEnableOrDisable(0.3f, TeethBracesPanel, false));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, germsPanel, true));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, darkPanel, true));
             tray.SetActive(false);
             dirtyTeethLayer.SetActive(false);
             bracedTeethLayer.gameObject.SetActive(true);
@@ -383,7 +385,6 @@ public class TeethBraces : MonoBehaviour
     public void NewTeetInsert()
     {
         NewTeethInsertIndex++;
-        print(NewTeethInsertIndex);
         taskDoneParticle.gameObject.SetActive(true);
         taskFillbar.fillAmount += 0.167f;
         TaskFillBar();

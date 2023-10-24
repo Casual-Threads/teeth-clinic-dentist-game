@@ -8,11 +8,11 @@ using UnityEngine.Events;
 public class DragCGS : MonoBehaviour
 {
     public bool isCanvasObject;
-    public AudioSource MouseDownSFX;
-    public GameObject MouseDownIndicator, MouseUpIndicator;
-    public ParticleSystem triggerParticles;
-    public int downSortingOrder, upSortinggOrder;
-    public int totalTriggers;
+    //public AudioSource MouseDownSFX;
+    //public GameObject MouseDownIndicator, MouseUpIndicator;
+    //public ParticleSystem triggerParticles;
+    //public int downSortingOrder, upSortinggOrder;
+    //public int totalTriggers;
     private Vector2 InitialPosition;
     private Vector2 MousePosition;
     private Vector3 screenPoint;
@@ -34,7 +34,8 @@ public class DragCGS : MonoBehaviour
     TeethCleaning TeethCleaningController;
     TeethReparing TeethReparingController;
     TeethBraces TeethBracesController;
-    ObjectOff ObjectOffController;
+    TeethGums TeethGumsController;
+    //ObjectOff ObjectOffController;
     public Transform  downParent;
     private int IndexOne = 0;
     private int IndexTwo = 0;
@@ -49,7 +50,7 @@ public class DragCGS : MonoBehaviour
         TeethCleaningController = FindObjectOfType<TeethCleaning>();
         TeethReparingController = FindObjectOfType<TeethReparing>();
         TeethBracesController = FindObjectOfType<TeethBraces>();
-        ObjectOffController = FindObjectOfType<ObjectOff>();
+        TeethGumsController = FindObjectOfType<TeethGums>();
         restPos = true;
         boxCollider = GetComponent<BoxCollider2D>();
         pingPong = GetComponent<ScalePingPong>();
@@ -61,10 +62,10 @@ public class DragCGS : MonoBehaviour
         {
             boxColliders.Add(_BoxColliders2D[i]);
         }
-        if (MouseUpIndicator)
-        {
-            MouseUpIndicator.SetActive(true);
-        }
+        //if (MouseUpIndicator)
+        //{
+        //    MouseUpIndicator.SetActive(true);
+        //}
     }
     private void ColliderManager(bool isTrue)
     {
@@ -82,17 +83,17 @@ public class DragCGS : MonoBehaviour
     void OnMouseDown()
     {
         MouseDown.Invoke();
-        var _Renderers = GetComponentsInChildren<Renderer>();
-        for(int i = 0; i < _Renderers.Length; i++)
-        {
-            _Renderers[i].sortingOrder = downSortingOrder;
-        }
-        if (pingPong) pingPong.enabled = false;
-        if (MouseDownIndicator) MouseDownIndicator.SetActive(true);
-        if (MouseUpIndicator) MouseUpIndicator.SetActive(false);
-        //if (m_Animator) m_Animator.enabled = true;
-        if (triggerParticles) triggerParticles.Play();
-        if (MouseDownSFX) MouseDownSFX.Play();
+        //var _Renderers = GetComponentsInChildren<Renderer>();
+        //for(int i = 0; i < _Renderers.Length; i++)
+        //{
+        //    _Renderers[i].sortingOrder = downSortingOrder;
+        //}
+        //if (pingPong) pingPong.enabled = false;
+        //if (MouseDownIndicator) MouseDownIndicator.SetActive(true);
+        //if (MouseUpIndicator) MouseUpIndicator.SetActive(false);
+        ////if (m_Animator) m_Animator.enabled = true;
+        //if (triggerParticles) triggerParticles.Play();
+        //if (MouseDownSFX) MouseDownSFX.Play();
         if (!isPosAssigned)
         {
             isPosAssigned = true;
@@ -133,22 +134,22 @@ public class DragCGS : MonoBehaviour
     {
         MouseUp.Invoke();
         SoundStopSFX.Invoke();
-        var _Renderers = GetComponentsInChildren<Renderer>();
-        for (int i = 0; i < _Renderers.Length; i++)
-        {
-            _Renderers[i].sortingOrder = upSortinggOrder;
-        }
-        if (pingPong) pingPong.enabled = true;
-        if (MouseDownIndicator) MouseDownIndicator.SetActive(false);
-        if (m_Animator) m_Animator.enabled = false;
-        if (triggerParticles) triggerParticles.Stop();
+        //var _Renderers = GetComponentsInChildren<Renderer>();
+        //for (int i = 0; i < _Renderers.Length; i++)
+        //{
+        //    _Renderers[i].sortingOrder = upSortinggOrder;
+        //}
+        //if (pingPong) pingPong.enabled = true;
+        //if (MouseDownIndicator) MouseDownIndicator.SetActive(false);
+        //if (m_Animator) m_Animator.enabled = false;
+        //if (triggerParticles) triggerParticles.Stop();
         if (restPos)
         {
             transform.localPosition = InitialPosition;
-            if (MouseUpIndicator)
-            {
-                MouseUpIndicator.SetActive(true);
-            }
+            //if (MouseUpIndicator)
+            //{
+            //    MouseUpIndicator.SetActive(true);
+            //}
         }
     }
 
@@ -1116,6 +1117,236 @@ public class DragCGS : MonoBehaviour
         }
         #endregion
 
+        #region Teeth Gums
+
+        if (TeethGumsController)
+        {
+            if (col.gameObject.name == "EmptyTray" && gameObject.name == "ToffeeAnim")
+            {
+                gameObject.SetActive(false);
+                TeethGumsController.ObjectEnableInTray(0);
+            }
+            else if (col.gameObject.name == "EmptyTray" && gameObject.name == "LemonAnim")
+            {
+                gameObject.SetActive(false);
+                TeethGumsController.ObjectEnableInTray(1);
+            }
+            else if (col.gameObject.name == "EmptyTray" && gameObject.name == "FishAnim")
+            {
+                gameObject.SetActive(false);
+                TeethGumsController.ObjectEnableInTray(2);
+            }
+            else if (col.gameObject.name == "EmptyTray" && gameObject.name == "StrawberryAnim")
+            {
+                gameObject.SetActive(false);
+                TeethGumsController.ObjectEnableInTray(3);
+            }
+            else if (col.gameObject.name == "EmptyTray" && gameObject.name == "BubbleAnim")
+            {
+                gameObject.SetActive(false);
+                TeethGumsController.ObjectEnableInTray(4);
+            }
+            else if (col.gameObject.name == "Toffee" && gameObject.name == "Clipper")
+            {
+                TeethGumsController.emptyTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
+                col.gameObject.transform.GetComponent<BoxCollider2D>().enabled = false;
+                col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
+                col.transform.GetChild(0).gameObject.SetActive(true);
+                if (downParent)
+                {
+                    col.transform.GetChild(0).parent = downParent;
+                }
+                TeethGumsController.TaskDone();
+            }
+            else if (col.gameObject.name == "Lemon" && gameObject.name == "Clipper")
+            {
+                TeethGumsController.emptyTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
+                col.gameObject.transform.GetComponent<PolygonCollider2D>().enabled = false;
+                col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
+                col.transform.GetChild(0).gameObject.SetActive(true);
+                if (downParent)
+                {
+                    col.transform.GetChild(0).parent = downParent;
+                }
+                TeethGumsController.TaskDone();
+            }
+            else if (col.gameObject.name == "FishBone" && gameObject.name == "Clipper")
+            {
+                TeethGumsController.emptyTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
+                col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
+                col.gameObject.transform.GetComponent<PolygonCollider2D>().enabled = false;
+                col.transform.GetChild(0).gameObject.SetActive(true);
+                if (downParent)
+                {
+                    col.transform.GetChild(0).parent = downParent;
+                }
+                TeethGumsController.TaskDone();
+            }
+            else if (col.gameObject.name == "Strawberry" && gameObject.name == "Clipper")
+            {
+                TeethGumsController.emptyTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
+                col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
+                col.gameObject.transform.GetComponent<PolygonCollider2D>().enabled = false;
+                col.transform.GetChild(0).gameObject.SetActive(true);
+                if (downParent)
+                {
+                    col.transform.GetChild(0).parent = downParent;
+                }
+                TeethGumsController.TaskDone();
+            }
+            else if (col.gameObject.name == "BubbleGum" && gameObject.name == "Clipper")
+            {
+                TeethGumsController.emptyTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
+                col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
+                col.transform.GetChild(0).gameObject.SetActive(true);
+                if (downParent)
+                {
+                    col.transform.GetChild(0).parent = downParent;
+                }
+                col.gameObject.transform.GetComponent<PolygonCollider2D>().enabled = false;
+                TeethGumsController.TaskDone();
+            }
+
+            else if ((col.gameObject.tag == "SingleTeethTag" || col.gameObject.tag == "EmptyTag") && gameObject.name == "Brush")
+            {
+                gameObject.transform.GetChild(0).GetChild(0).gameObject.SetActive(true);
+                //TeethReparingController.burshSFX.Play();
+                SoundPlaySFX.Invoke();
+                if (col.gameObject.tag == "SingleTeethTag")
+                {
+                    col.GetComponent<Image>().color = new Color(1, 1, 1, 1);
+
+                    if (col.GetComponent<Image>().color == new Color(1, 1, 1, 1))
+                    {
+                        col.enabled = false;
+                        col.GetComponent<PolygonCollider2D>().enabled = false;
+                        TeethGumsController.taskFillbar.fillAmount += 0.0833f;
+                        TeethGumsController.TaskFillBar();
+                        IndexOne++;
+                        if (IndexOne == 12)
+                        {
+                            isAlphaIncreased = true;
+                            IndexOne = 0;
+                        }
+
+                    }
+                }
+                if (col.gameObject.tag == "EmptyTag")
+                {
+                    col.transform.GetChild(0).GetComponent<Image>().color = new Color(1, 1, 1, 1);
+
+                    if (col.transform.GetChild(0).GetComponent<Image>().color == new Color(1, 1, 1, 1))
+                    {
+                        col.enabled = false;
+                        col.GetComponent<PolygonCollider2D>().enabled = false;
+                        IndexTwo++;
+                        if (IndexTwo == 2)
+                        {
+                            IsAlphaReduced = true;
+                            IndexTwo = 0;
+                        }
+                    }
+
+                }
+                if (isAlphaIncreased == true && IsAlphaReduced == true)
+                {
+                    SoundStopSFX.Invoke();
+                    TeethGumsController.TaskDone();
+                }
+            }
+
+            else if (col.gameObject.tag == "DurtTag" && gameObject.name == "Excavator")
+            {
+                gameObject.transform.GetChild(0).GetChild(0).gameObject.SetActive(true);
+                TeethGumsController.excavatorSFX.Play();
+                if (col.gameObject.tag == "DurtTag")
+                {
+                    col.GetComponent<Image>().color = new Color(1, 1, 1, col.GetComponent<Image>().color.a - 0.2f);
+                    if (col.GetComponent<Image>().color.a <= 0)
+                    {
+                        col.transform.GetChild(0).gameObject.SetActive(false);
+                        col.enabled = false;
+                        TeethGumsController.taskFillbar.fillAmount += 0.25f;
+                        TeethGumsController.TaskFillBar();
+                        IndexOne++;
+                        if (IndexOne == 4)
+                        {
+                            IndexOne = 0;
+                            TeethGumsController.TaskDone();
+                            SoundStopSFX.Invoke();
+                        }
+
+                    }
+                }
+            }
+            else if (col.gameObject.name == "Gum" && gameObject.name == "GumsScope")
+            {
+                col.transform.GetComponent<Image>().enabled = true;
+                col.transform.GetChild(0).gameObject.SetActive(true);
+                TeethGumsController.TaskDone();
+            }
+            else if((col.gameObject.name == "GumVisible" || col.gameObject.name == "InjuredPart")&& gameObject.name == "TeethLaser")
+            {
+                if (col.gameObject.name == "GumVisible")
+                {
+                    col.GetComponent<Image>().color = new Color(1, 1, 1, col.GetComponent<Image>().color.a - 0.2f);
+                    if (col.GetComponent<Image>().color.a <= 0)
+                    {
+                        IsAlphaReduced = true;
+                    }
+                }
+                if (col.gameObject.name == "InjuredPart")
+                {
+                    col.GetComponent<Image>().color = new Color(1, 1, 1, col.GetComponent<Image>().color.a + 0.3f);
+                    //col.transform.localScale += new Vector3(0.2f , 0.2f, 0.2f);
+                    col.transform.GetChild(0).localScale += new Vector3(0.2f , 0.2f, 0.2f);
+                    if ((col.GetComponent<Image>().color.a >= 1) && (col.transform.GetChild(0).localScale.x >= 0.8 && col.transform.GetChild(0).localScale.y >= 0.8 && col.transform.GetChild(0).localScale.z >= 0.8))
+                    {
+                        print("ok");
+                        col.enabled = false;
+                        isAlphaIncreased = true;
+                    }
+                }
+                if(IsAlphaReduced == true && isAlphaIncreased == true)
+                {
+                    TeethGumsController.TaskDone();
+                }
+
+            }
+            else if( col.gameObject.name == "DirtyDrop" && gameObject.name == "Cotton")
+            {
+                TeethGumsController.cottonTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
+                //gameObject.GetComponent<Image>().enabled = false;
+                col.GetComponent<Image>().color = new Color(1, 1, 1, col.GetComponent<Image>().color.a - 0.3f);
+                //gameObject.SetActive(false);
+                if (col.gameObject.name == "DirtyDrop")
+                {
+                    StartCoroutine(RemoveDrop(col.gameObject));
+
+                }
+                if(IsAlphaReduced == true)
+                {
+                    print("yes done");
+                    TeethGumsController.TaskDone();
+                }
+            }
+            else if (col.gameObject.name == "CottonTray" && gameObject.name == "CleanCotton")
+            {
+                if (gameObject.name == "CleanCotton")
+                {
+                    TeethGumsController.CottonImageOnTray(IndexOne);
+                    IndexOne++;
+                }
+                if (IsAlphaReduced == true)
+                {
+                    print("yes done");
+                    TeethGumsController.TaskDone();
+                }
+
+            }
+        }
+        #endregion
+
         #region Germs Killing
         if (col.gameObject.name == "MagnifyingGlass" && gameObject.name == "PinkGermParent")
         {
@@ -1230,6 +1461,32 @@ public class DragCGS : MonoBehaviour
         }
     }
 
+
+    IEnumerator RemoveDrop(GameObject colObject)
+    {
+        yield return new WaitForSeconds(0.1f);
+        colObject.transform.GetChild(0).gameObject.SetActive(true);
+        colObject.transform.GetChild(0).GetComponent<Animator>().enabled = true;
+        if (colObject.GetComponent<Image>().color.a <= 0)
+        {
+            IsAlphaReduced = true;
+        }
+        //yield return new WaitForSeconds(3f);
+        //gameObject.SetActive(false);
+    } 
+    IEnumerator CottonAnim(GameObject colObject)
+    {
+        yield return new WaitForSeconds(0.1f);
+        colObject.transform.GetChild(0).gameObject.SetActive(true);
+        colObject.transform.GetChild(0).GetComponent<Animator>().enabled = true;
+        if (colObject.GetComponent<Image>().color.a <= 0)
+        {
+            IsAlphaReduced = true;
+        }
+        //yield return new WaitForSeconds(3f);
+        //gameObject.SetActive(false);
+    }
+
     public void OffObject(GameObject activateObject)
     {
         activateObject.transform.GetComponent<Image>().enabled = false;
@@ -1255,12 +1512,12 @@ public class DragCGS : MonoBehaviour
         }
 
         inTrigger = false;
-        if (MouseDownIndicator) MouseDownIndicator.SetActive(true);
+        //if (MouseDownIndicator) MouseDownIndicator.SetActive(true);
     }
     private void OnTriggerStay2D(Collider2D collision)
     {
         inTrigger = true;
-        if (MouseDownIndicator) MouseDownIndicator.SetActive(false);
+        //if (MouseDownIndicator) MouseDownIndicator.SetActive(false);
 
         //if (collision.gameObject.name == "PinkGerm" && gameObject.name == "PinkGermsKiller")
         //{
@@ -1273,45 +1530,10 @@ public class DragCGS : MonoBehaviour
         if (boxCollider) boxCollider.enabled = true;
         if (m_Animator) m_Animator.enabled = false;
         if (pingPong) pingPong.enabled = true;
-        if (MouseDownIndicator)
-        {
-            if (MouseDownIndicator.GetComponentInChildren<Image>())
-            {
-                MouseDownIndicator.GetComponentInChildren<Image>().enabled = true;
-            }
-        }
-        if (MouseUpIndicator)
-        {
-            if (MouseUpIndicator.GetComponentInChildren<Image>())
-            {
-                MouseUpIndicator.GetComponentInChildren<Image>().enabled = true;
-            }
-        }
     }
     private void OnDisable()
     {
-        DisableObjects();
-        if (MouseDownIndicator)
-        {
-            if (MouseDownIndicator.GetComponentInChildren<Image>())
-            {
-                MouseDownIndicator.GetComponentInChildren<Image>().enabled = false;
-            }
-        }
-        if (MouseUpIndicator)
-        {
-            if (MouseUpIndicator.GetComponentInChildren<Image>())
-            {
-                MouseUpIndicator.GetComponentInChildren<Image>().enabled = false;
-            }
-        }
         if (isPosAssigned) transform.localPosition = InitialPosition;
-    }
-    private void DisableObjects()
-    {
-        if (boxCollider) boxCollider.enabled = false;
-        if (MouseDownIndicator) MouseDownIndicator.SetActive(false);
-        if (MouseUpIndicator) MouseUpIndicator.SetActive(false);
     }
 
     IEnumerator ObjectEnableOrDisable(float _Delay, GameObject activateObject, bool isTrue)
