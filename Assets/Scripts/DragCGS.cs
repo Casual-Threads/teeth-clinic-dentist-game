@@ -1292,6 +1292,7 @@ public class DragCGS : MonoBehaviour
                     col.GetComponent<Image>().color = new Color(1, 1, 1, col.GetComponent<Image>().color.a - 0.2f);
                     if (col.GetComponent<Image>().color.a <= 0)
                     {
+                        
                         IsAlphaReduced = true;
                     }
                 }
@@ -1299,51 +1300,65 @@ public class DragCGS : MonoBehaviour
                 {
                     col.GetComponent<Image>().color = new Color(1, 1, 1, col.GetComponent<Image>().color.a + 0.3f);
                     //col.transform.localScale += new Vector3(0.2f , 0.2f, 0.2f);
-                    col.transform.GetChild(0).localScale += new Vector3(0.2f , 0.2f, 0.2f);
+                    col.transform.GetChild(0).localScale += new Vector3(0.17f , 0.17f, 0.17f);
                     if ((col.GetComponent<Image>().color.a >= 1) && (col.transform.GetChild(0).localScale.x >= 0.8 && col.transform.GetChild(0).localScale.y >= 0.8 && col.transform.GetChild(0).localScale.z >= 0.8))
                     {
-                        print("ok");
-                        col.enabled = false;
                         isAlphaIncreased = true;
+                        col.enabled = false;
+                        
                     }
                 }
                 if(IsAlphaReduced == true && isAlphaIncreased == true)
                 {
+                    print("yes");
                     TeethGumsController.TaskDone();
+                    print("ok");
                 }
 
             }
-            else if( col.gameObject.name == "DirtyDrop" && gameObject.name == "Cotton")
+            else if((col.gameObject.name == "DirtyDrop" || col.gameObject.name == "CottonTray") && gameObject.name == "Cotton")
             {
                 TeethGumsController.cottonTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
-                //gameObject.GetComponent<Image>().enabled = false;
-                col.GetComponent<Image>().color = new Color(1, 1, 1, col.GetComponent<Image>().color.a - 0.3f);
-                //gameObject.SetActive(false);
                 if (col.gameObject.name == "DirtyDrop")
                 {
-                    StartCoroutine(RemoveDrop(col.gameObject));
-
+                    col.enabled = false;
+                    col.GetComponent<Image>().color = new Color(1, 1, 1, col.GetComponent<Image>().color.a - 0.25f);
+                    if(col.GetComponent<Image>().color.a <= 0)
+                    {
+                        IsAlphaReduced = true;
+                    }
                 }
-                if(IsAlphaReduced == true)
+                if (gameObject.name == "Cotton")
                 {
-                    print("yes done");
-                    TeethGumsController.TaskDone();
+                    gameObject.GetComponent<Image>().color = new Color(1, 1, 1, gameObject.GetComponent<Image>().color.a - 1f);
+                    gameObject.transform.GetChild(0).GetComponent<Image>().color = new Color(1, 1, 1, gameObject.transform.GetChild(0).GetComponent<Image>().color.a + 1f);
                 }
-            }
-            else if (col.gameObject.name == "CottonTray" && gameObject.name == "CleanCotton")
-            {
-                if (gameObject.name == "CleanCotton")
+                if (col.gameObject.name == "CottonTray")
                 {
-                    TeethGumsController.CottonImageOnTray(IndexOne);
-                    IndexOne++;
+                    gameObject.SetActive(false);
+                    TeethGumsController.CottonImageOnTray();
                 }
                 if (IsAlphaReduced == true)
                 {
                     print("yes done");
                     TeethGumsController.TaskDone();
                 }
-
             }
+            //else if (col.gameObject.name == "CottonTray" && gameObject.name == "CleanCotton")
+            //{
+            //    if (gameObject.name == "CleanCotton")
+            //    {
+            //        gameObject.GetComponent<BoxCollider2D>().enabled = false;
+            //        TeethGumsController.CottonImageOnTray(IndexOne);
+            //        IndexOne++;
+            //    }
+            //    if (IsAlphaReduced == true)
+            //    {
+            //        print("yes done");
+            //        TeethGumsController.TaskDone();
+            //    }
+
+            //}
         }
         #endregion
 
