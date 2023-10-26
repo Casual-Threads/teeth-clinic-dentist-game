@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 [System.Serializable]
 public enum TeethGumsActionPerform
 {
-    none, Clipper, Brush, Excavator, GumsScope, TeethLaser, Gums, Germs
+    none, Clipper, Brush, Excavator, GumsScope, TeethLaser, GumCleaning, Spray, LaserLight, Germs
 }
 
 public class TeethGums : MonoBehaviour
@@ -29,12 +29,12 @@ public class TeethGums : MonoBehaviour
     public TeethGumsActionPerform action;
     [Header("Dragable Items")]
     public GameObject clipper;
-    public GameObject brush, excavator, gumsScope, teethLaser, cottonPot;
+    public GameObject brush, excavator, gumsScope, teethLaser, cottonPot, sprayBottel, mouthSprayAnim, laserLight;
     [Header("Items Layers")]
     public GameObject tray;
-    public GameObject emptyTray, cottonTray, dirtyTeethLayer,/* whiteTeethLayer, whiteSingleTeethLayer,*/ teethShine, dirtyDrop;
+    public GameObject emptyTray, cottonTray, dirtyTeethLayer, gumsEffectedTeeth, teethShine, dirtyDrop, injuredPart, gum;
     [Header("Panels")]
-    public GameObject TeethGumsPanel;
+    public GameObject teethGumsPanel;
     public GameObject levelCompletePanel, settingPanel, RateUsPanel, loadingPanel, germsPanel, darkPanel;
     [Header("Images")]
     public Image openMouth;
@@ -45,7 +45,6 @@ public class TeethGums : MonoBehaviour
     public Image[] starImages;
     [Header("Arrays for Indications")]
     public Image[] durtLayer;
-    //public Image[] crackTeethLayer, blackDamagedTeethLayer, yellowSingleTeethLayer;
     [Header("Sprites")]
     public Sprite goldStarSprite;
     public Sprite grayStarSprite, lightOnSprite, lightOffSprite, cleanTeethLayer, btnOnSprite, btnOffSprite;
@@ -56,10 +55,8 @@ public class TeethGums : MonoBehaviour
     public AudioSource itemPickSFX;
     public AudioSource itemDropSFX, burshSFX, excavatorSFX, teethLaserSFX;
     private bool isLight, isRateus, isMusic, isVibration;
+    private bool isToffee, isLemon, isFishBone, isStrawberry, isBubble;
     AsyncOperation asyncLoad;
-    private bool isCheck;
-    private int NewTeethInsertIndex = 0;
-    private int bracesIndex = 0;
     public Transform downParent;
     void Start()
     {
@@ -129,19 +126,18 @@ public class TeethGums : MonoBehaviour
 
     #region TaskDone
     public void TaskDone()
-    {   
+    {
         if (action == TeethGumsActionPerform.Clipper)
         {
             itemPickSFX.Play();
             clipper.SetActive(false);
         }
-        else if(action == TeethGumsActionPerform.Brush)
+        else if (action == TeethGumsActionPerform.Brush)
         {
             taskDoneParticle.gameObject.SetActive(true);
             action = TeethGumsActionPerform.Excavator;
             StartCoroutine(ObjectEnableOrDisable(0.5f, brush, false));
             StartCoroutine(ObjectEnableOrDisable(0.5f, excavator, true));
-            //whiteSingleTeethLayer.SetActive(true);
             AfterTaskDonePerform();
             for (int i = 0; i < durtLayer.Length; i++)
             {
@@ -152,7 +148,7 @@ public class TeethGums : MonoBehaviour
                 }
             }
         }
-        else if(action == TeethGumsActionPerform.Excavator)
+        else if (action == TeethGumsActionPerform.Excavator)
         {
             taskDoneParticle.gameObject.SetActive(true);
             action = TeethGumsActionPerform.GumsScope;
@@ -160,82 +156,66 @@ public class TeethGums : MonoBehaviour
             StartCoroutine(ObjectEnableOrDisable(0.5f, gumsScope, true));
             AfterTaskDonePerform();
         }
-        else if(action == TeethGumsActionPerform.GumsScope)
+        else if (action == TeethGumsActionPerform.GumsScope)
         {
             taskDoneParticle.gameObject.SetActive(true);
+            action = TeethGumsActionPerform.TeethLaser;
+            StartCoroutine(ObjectEnableOrDisable(1.5f, teethLaser, true));
+            StartCoroutine(ObjectEnableOrDisable(1.5f, gumsEffectedTeeth, true));
+            StartCoroutine(ObjectEnableOrDisable(1.5f, dirtyTeethLayer, false));
+            StartCoroutine(ObjectEnableOrDisable(1.5f, gum, false));
             gumsScope.SetActive(false);
-            //action = TeethGumsActionPerform.TeethLaser;
-            //StartCoroutine(ObjectEnableOrDisable(0.5f, gumsScope, false));
-            //StartCoroutine(ObjectEnableOrDisable(0.5f, teethLaser, true));
-            //AfterTaskDonePerform();
+            AfterTaskDonePerform();
         }
-        //else if (action == TeethGumsActionPerform.TeethCutter)
-        //{
-        //    itemPickSFX.Play();
-        //    teethCutter.transform.GetComponent<Image>().enabled = false;
-        //    taskDoneParticle.gameObject.SetActive(true);
-        //    StartCoroutine(EnableOrDisable(0.5f, teethCutter, false));
-        //    StartCoroutine(EnableOrDisable(0.5f, spoonWithPot, true));
-        //    AfterTaskDonePerform();
-        //    StartCoroutine(AfterTaskColliderAndIndicationsOn());
-        //}
+
         else if (action == TeethGumsActionPerform.TeethLaser)
         {
             taskDoneParticle.gameObject.SetActive(true);
-            action = TeethGumsActionPerform.Gums;
+            action = TeethGumsActionPerform.GumCleaning;
             StartCoroutine(ObjectEnableOrDisable(0.5f, teethLaser, false));
             StartCoroutine(ObjectEnableOrDisable(0.5f, cottonPot, true));
-            //StartCoroutine(ObjectEnableOrDisable(0.3f, TeethGumsPanel, false));
-            //StartCoroutine(ObjectEnableOrDisable(0.5f, darkPanel, true));
-            //tray.SetActive(false);
             dirtyTeethLayer.SetActive(false);
-            //bracedTeethLayer.gameObject.SetActive(true);
-            //bracedTeethLayer.sprite = cleanTeethLayer;
+            AfterTaskDonePerform();
+        }
+        else if (action == TeethGumsActionPerform.Spray)
+        {
+            taskDoneParticle.gameObject.SetActive(true);
+            action = TeethGumsActionPerform.LaserLight;
+            StartCoroutine(ObjectEnableOrDisable(0.5f, sprayBottel, false));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, gumsEffectedTeeth, false));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, dirtyTeethLayer, true));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, laserLight, true));
+            AfterTaskDonePerform();
+        }
+        else if (action == TeethGumsActionPerform.LaserLight)
+        {
+            taskDoneParticle.gameObject.SetActive(true);
+            action = TeethGumsActionPerform.Germs;
+            StartCoroutine(ObjectEnableOrDisable(0.5f, teethGumsPanel, false));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, laserLight, false));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, germsPanel, true));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, darkPanel, true));
             AfterTaskDonePerform();
 
-        }
-        else if (action == TeethGumsActionPerform.Gums)
-        {
-            itemPickSFX.Play();
-            //cotton.SetActive(false);
-        }
-        //else if (action == TeethGumsActionPerform.Germs)
-        //{
-        //    taskDoneParticle.gameObject.SetActive(true);
-        //    action = TeethGumsActionPerform.Germs;
-        //    StartCoroutine(EnableOrDisable(0.5f, germsPanel, false));
-        //    StartCoroutine(EnableOrDisable(0.5f, darkPanel, false));
-        //    StartCoroutine(EnableOrDisable(0.5f, teethShine, true));
-        //    //dirtyTeethLayer.SetActive(false);
-        //    //openMouth.sprite = cleanTeethLayer;
-        //    print("All Task Done");
-        //    StartCoroutine(LevelComplete());
-        //}
-    }
 
-
-    IEnumerator ChangeActionType()
-    {
-        yield return new WaitForSeconds(1f);
-
-        if (action == TeethGumsActionPerform.Brush)
-        {
-            action = TeethGumsActionPerform.Excavator;
         }
-        else if (action == TeethGumsActionPerform.Excavator)
+        else if (action == TeethGumsActionPerform.Germs)
         {
-            action = TeethGumsActionPerform.GumsScope;
+            taskDoneParticle.gameObject.SetActive(true);
+            StartCoroutine(ObjectEnableOrDisable(0.5f, germsPanel, false));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, darkPanel, false));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, teethShine, true));
+            //dirtyTeethLayer.SetActive(false);
+            //openMouth.sprite = cleanTeethLayer;
+            print("All Task Done");
+            StartCoroutine(LevelComplete());
         }
-        //else if (action == TeethGumsActionPerform.GumsScope)
-        //{
-        //    action = TeethGumsActionPerform.TeethCutter;
-        //}
     }
     #endregion
 
     #region Funcations
 
-    #region First Task
+    #region Gums Cleaning
     // First Task Tray Image On 1 by 1
 
     private int index =0;
@@ -269,6 +249,9 @@ public class TeethGums : MonoBehaviour
         if (cottonTrayImages[0].gameObject.activeSelf && cottonTrayImages[1].gameObject.activeSelf && cottonTrayImages[2].gameObject.activeSelf && cottonTrayImages[3].gameObject.activeSelf )
         {
             taskDoneParticle.gameObject.SetActive(true);
+            action = TeethGumsActionPerform.Spray;
+            StartCoroutine(ObjectEnableOrDisable(0.5f, sprayBottel, true));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, cottonPot, false));
             AfterTaskDonePerform();
         }
         StartCoroutine(TrayIEnumerator());
@@ -286,7 +269,7 @@ public class TeethGums : MonoBehaviour
                 trayImages[1].gameObject.SetActive(true);
             }
             trayImages[0].gameObject.SetActive(true);
-                    
+
         }
         else if (index == 1)
         {
@@ -295,7 +278,7 @@ public class TeethGums : MonoBehaviour
                 trayImages[3].gameObject.SetActive(true);
             }
             trayImages[2].gameObject.SetActive(true);
-            
+
         }
         else if (index == 2)
         {
@@ -304,7 +287,7 @@ public class TeethGums : MonoBehaviour
                 trayImages[5].gameObject.SetActive(true);
             }
             trayImages[4].gameObject.SetActive(true);
-            
+
         }
         else if (index == 3)
         {
@@ -341,15 +324,16 @@ public class TeethGums : MonoBehaviour
     }
     #endregion
 
-    private void ScopeTask()
-    {
-        action = TeethGumsActionPerform.TeethLaser;
-        StartCoroutine(ObjectEnableOrDisable(0.5f, teethLaser, true));
-        AfterTaskDonePerform();
-    }
+    //private void ScopeTask()
+    //{
+    //    action = TeethGumsActionPerform.TeethLaser;
+    //    StartCoroutine(ObjectEnableOrDisable(0.5f, teethLaser, true));
+    //    AfterTaskDonePerform();
+    //}
 
     private void AfterTaskDonePerform()
     {
+        injuredPart.transform.GetComponent<PolygonCollider2D>().enabled = true;
         StartCoroutine(ObjectEnableOrDisable(2f, taskDoneParticle.gameObject, false));
         taskFillbar.fillAmount = 0f;
         for (int i = 0; i < starImages.Length; i++)
@@ -379,6 +363,7 @@ public class TeethGums : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
         emptyTray.transform.DOLocalMove(new Vector3(-991f, -344f, 0), 1f);
+        cottonTray.transform.DOLocalMove(new Vector3(-991f, -344f, 0), 1f);
     }
     IEnumerator LevelComplete()
     {

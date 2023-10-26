@@ -8,21 +8,14 @@ using UnityEngine.Events;
 public class DragCGS : MonoBehaviour
 {
     public bool isCanvasObject;
-    //public AudioSource MouseDownSFX;
-    //public GameObject MouseDownIndicator, MouseUpIndicator;
-    //public ParticleSystem triggerParticles;
-    //public int downSortingOrder, upSortinggOrder;
-    //public int totalTriggers;
+
     private Vector2 InitialPosition;
     private Vector2 MousePosition;
     private Vector3 screenPoint;
     private Vector3 offset;
     private float deltaX, deltaY;
-    private ScalePingPong pingPong;
     private bool isPosAssigned, restPos;
-    private BoxCollider2D boxCollider;
-    private List<BoxCollider2D> boxColliders = new List<BoxCollider2D>();
-    private Animator m_Animator;
+
     private int didTrigger;
     private bool inTrigger = false;
 
@@ -35,6 +28,7 @@ public class DragCGS : MonoBehaviour
     TeethReparing TeethReparingController;
     TeethBraces TeethBracesController;
     TeethGums TeethGumsController;
+    GermsKillingScript GermKillingController;
     //ObjectOff ObjectOffController;
     public Transform  downParent;
     private int IndexOne = 0;
@@ -51,31 +45,8 @@ public class DragCGS : MonoBehaviour
         TeethReparingController = FindObjectOfType<TeethReparing>();
         TeethBracesController = FindObjectOfType<TeethBraces>();
         TeethGumsController = FindObjectOfType<TeethGums>();
+        GermKillingController = FindObjectOfType<GermsKillingScript>();
         restPos = true;
-        boxCollider = GetComponent<BoxCollider2D>();
-        pingPong = GetComponent<ScalePingPong>();
-        m_Animator = GetComponentInChildren<Animator>();
-        if (m_Animator)
-            m_Animator.enabled = false;
-        var _BoxColliders2D = FindObjectsOfType<BoxCollider2D>();
-        for(int i = 0; i < _BoxColliders2D.Length; i++)
-        {
-            boxColliders.Add(_BoxColliders2D[i]);
-        }
-        //if (MouseUpIndicator)
-        //{
-        //    MouseUpIndicator.SetActive(true);
-        //}
-    }
-    private void ColliderManager(bool isTrue)
-    {
-        for(int i = 0; i < boxColliders.Count; i++)
-        {
-            if(boxColliders[i] != boxCollider)
-            {
-                boxColliders[i].enabled = isTrue;
-            }
-        }
     }
     #endregion
 
@@ -83,17 +54,6 @@ public class DragCGS : MonoBehaviour
     void OnMouseDown()
     {
         MouseDown.Invoke();
-        //var _Renderers = GetComponentsInChildren<Renderer>();
-        //for(int i = 0; i < _Renderers.Length; i++)
-        //{
-        //    _Renderers[i].sortingOrder = downSortingOrder;
-        //}
-        //if (pingPong) pingPong.enabled = false;
-        //if (MouseDownIndicator) MouseDownIndicator.SetActive(true);
-        //if (MouseUpIndicator) MouseUpIndicator.SetActive(false);
-        ////if (m_Animator) m_Animator.enabled = true;
-        //if (triggerParticles) triggerParticles.Play();
-        //if (MouseDownSFX) MouseDownSFX.Play();
         if (!isPosAssigned)
         {
             isPosAssigned = true;
@@ -1186,7 +1146,7 @@ public class DragCGS : MonoBehaviour
             {
                 TeethGumsController.emptyTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
                 col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
-                col.gameObject.transform.GetComponent<PolygonCollider2D>().enabled = false;
+                col.enabled = false;
                 col.transform.GetChild(0).gameObject.SetActive(true);
                 if (downParent)
                 {
@@ -1203,7 +1163,7 @@ public class DragCGS : MonoBehaviour
                 {
                     col.transform.GetChild(0).parent = downParent;
                 }
-                col.gameObject.transform.GetComponent<PolygonCollider2D>().enabled = false;
+                col.enabled = false;
                 TeethGumsController.TaskDone();
             }
 
@@ -1299,20 +1259,16 @@ public class DragCGS : MonoBehaviour
                 if (col.gameObject.name == "InjuredPart")
                 {
                     col.GetComponent<Image>().color = new Color(1, 1, 1, col.GetComponent<Image>().color.a + 0.3f);
-                    //col.transform.localScale += new Vector3(0.2f , 0.2f, 0.2f);
                     col.transform.GetChild(0).localScale += new Vector3(0.17f , 0.17f, 0.17f);
                     if ((col.GetComponent<Image>().color.a >= 1) && (col.transform.GetChild(0).localScale.x >= 0.8 && col.transform.GetChild(0).localScale.y >= 0.8 && col.transform.GetChild(0).localScale.z >= 0.8))
                     {
                         isAlphaIncreased = true;
                         col.enabled = false;
-                        
                     }
                 }
                 if(IsAlphaReduced == true && isAlphaIncreased == true)
                 {
-                    print("yes");
                     TeethGumsController.TaskDone();
-                    print("ok");
                 }
 
             }
@@ -1338,48 +1294,75 @@ public class DragCGS : MonoBehaviour
                     gameObject.SetActive(false);
                     TeethGumsController.CottonImageOnTray();
                 }
+                //if (IsAlphaReduced == true)
+                //{
+                //    TeethGumsController.TaskDone();
+                //}
+            }
+            else if (col.gameObject.name == "InjuredPart" && gameObject.name == "MouthSpray")
+            {
+
+                TeethGumsController.mouthSprayAnim.SetActive(true);
+                gameObject.SetActive(false);
+
+            }
+            else if (col.gameObject.name == "InjuredPart" && gameObject.name == "MouthSprayAnim")
+            {
+                if (col.gameObject.name == "InjuredPart")
+                {
+
+                    col.GetComponent<Image>().color = new Color(1, 1, 1, col.GetComponent<Image>().color.a - 0.2f);
+                    TeethGumsController.taskFillbar.fillAmount += 0.2f;
+                    TeethGumsController.TaskFillBar();
+                    if (col.GetComponent<Image>().color.a <= 0)
+                    {
+                        IsAlphaReduced = true;
+                        col.enabled = false;
+
+                    }
+                }
                 if (IsAlphaReduced == true)
                 {
-                    print("yes done");
                     TeethGumsController.TaskDone();
+                    gameObject.SetActive(false);
+                }
+
+            }
+            else if (col.gameObject.tag == "GreenDotTag" && gameObject.name == "LaserLight")
+            {
+                TeethGumsController.teethLaserSFX.Play();
+                if (col.gameObject.tag == "GreenDotTag")
+                {
+                    col.transform.DOScale(new Vector3(0f, 0f, 0f), 3f);
+                    {
+                        col.enabled = false;
+                        TeethGumsController.taskFillbar.fillAmount += 0.25f;
+                        TeethGumsController.TaskFillBar();
+                        IndexOne++;
+                        if (IndexOne == 4)
+                        {
+                            IndexOne = 0;
+                            TeethGumsController.TaskDone();
+                        }
+
+                    }
                 }
             }
-            //else if (col.gameObject.name == "CottonTray" && gameObject.name == "CleanCotton")
-            //{
-            //    if (gameObject.name == "CleanCotton")
-            //    {
-            //        gameObject.GetComponent<BoxCollider2D>().enabled = false;
-            //        TeethGumsController.CottonImageOnTray(IndexOne);
-            //        IndexOne++;
-            //    }
-            //    if (IsAlphaReduced == true)
-            //    {
-            //        print("yes done");
-            //        TeethGumsController.TaskDone();
-            //    }
-
-            //}
         }
         #endregion
 
         #region Germs Killing
-        if (col.gameObject.name == "MagnifyingGlass" && gameObject.name == "PinkGermParent")
-        {
-            gameObject.transform.GetComponent<PolygonCollider2D>().enabled = false;
-            gameObject.transform.GetChild(0).GetComponent<PolygonCollider2D>().enabled = true;
-            gameObject.transform.GetComponent<PolygonCollider2D>().isTrigger = false;
-            //print("yes");
-        }
-        else if (col.gameObject.name == "PinkGerm" && gameObject.name == "PinkGermsKiller")
+
+        if (col.gameObject.name == "PinkGerm" && gameObject.name == "PinkGermsKiller")
         {
             if (col.gameObject.name == "PinkGerm")
             {
                 col.enabled = false;
-                TeethReparingController.teethLaserSFX.Play();
+                //TeethReparingController.teethLaserSFX.Play();
                 col.transform.DOScale(new Vector3(0f, 0f, 0f), 1f);
                 {
-                    TeethReparingController.taskFillbar.fillAmount += 0.125f;
-                    TeethReparingController.TaskFillBar();
+                    GermKillingController.taskFillbar.fillAmount += 0.125f;
+                    GermKillingController.TaskFillBar();
                     IndexOne++;
                     if (IndexOne == 2)
                     {
@@ -1392,20 +1375,19 @@ public class DragCGS : MonoBehaviour
         }
         else if (col.gameObject.name == "BlueGerm" && gameObject.name == "BlueGermsKiller")
         {
-            //col.transform.GetChild(0).gameObject.SetActive(false);
             if (col.gameObject.name == "BlueGerm")
             {
-                TeethReparingController.teethLaserSFX.Play();
+                col.enabled = false;
+                //GermKillingController.teethLaserSFX.Play();
                 col.transform.DOScale(new Vector3(0f, 0f, 0f), 1f);
                 {
-                    col.enabled = false;
-                    TeethReparingController.taskFillbar.fillAmount += 0.125f;
-                    TeethReparingController.TaskFillBar();
+                    GermKillingController.taskFillbar.fillAmount += 0.125f;
+                    GermKillingController.TaskFillBar();
                     IndexOne++;
                     if (IndexOne == 2)
                     {
-                        IndexOne = 0;
                         isBlueGermOff = true;
+                        IndexOne = 0;
                     }
 
                 }
@@ -1413,20 +1395,19 @@ public class DragCGS : MonoBehaviour
         }
         else if (col.gameObject.name == "GreenGerm" && gameObject.name == "GreenGermsKiller")
         {
-            TeethReparingController.teethLaserSFX.Play();
-            //col.transform.GetChild(0).gameObject.SetActive(false);
             if (col.gameObject.name == "GreenGerm")
             {
+                col.enabled = false;
+                //GermKillingController.teethLaserSFX.Play();
                 col.transform.DOScale(new Vector3(0f, 0f, 0f), 1f);
                 {
-                    col.enabled = false;
-                    TeethReparingController.taskFillbar.fillAmount += 0.125f;
-                    TeethReparingController.TaskFillBar();
+                    GermKillingController.taskFillbar.fillAmount += 0.125f;
+                    GermKillingController.TaskFillBar();
                     IndexOne++;
                     if (IndexOne == 2)
                     {
-                        IndexOne = 0;
                         isGreenGermOff = true;
+                        IndexOne = 0;
                     }
 
                 }
@@ -1434,21 +1415,20 @@ public class DragCGS : MonoBehaviour
         }
         else if (col.gameObject.name == "OrangeGerm" && gameObject.name == "OrangeGermsKiller")
         {
-            TeethReparingController.teethLaserSFX.Play();
-            //col.transform.GetChild(0).gameObject.SetActive(false);
             if (col.gameObject.name == "OrangeGerm")
             {
+                col.enabled = false;
+                //GermKillingController.teethLaserSFX.Play();
                 col.transform.DOScale(new Vector3(0f, 0f, 0f), 1f);
                 {
-                    col.enabled = false;
-                    TeethReparingController.taskFillbar.fillAmount += 0.125f;
-                    TeethReparingController.TaskFillBar();
+                    
+                    GermKillingController.taskFillbar.fillAmount += 0.125f;
+                    GermKillingController.TaskFillBar();
                     IndexOne++;
                     if (IndexOne == 2)
                     {
                         IndexOne = 0;
                         isOrangeGermOff = true;
-                        //TeethReparingController.TaskDone();
                     }
 
                 }
@@ -1476,36 +1456,9 @@ public class DragCGS : MonoBehaviour
         }
     }
 
-
-    IEnumerator RemoveDrop(GameObject colObject)
-    {
-        yield return new WaitForSeconds(0.1f);
-        colObject.transform.GetChild(0).gameObject.SetActive(true);
-        colObject.transform.GetChild(0).GetComponent<Animator>().enabled = true;
-        if (colObject.GetComponent<Image>().color.a <= 0)
-        {
-            IsAlphaReduced = true;
-        }
-        //yield return new WaitForSeconds(3f);
-        //gameObject.SetActive(false);
-    } 
-    IEnumerator CottonAnim(GameObject colObject)
-    {
-        yield return new WaitForSeconds(0.1f);
-        colObject.transform.GetChild(0).gameObject.SetActive(true);
-        colObject.transform.GetChild(0).GetComponent<Animator>().enabled = true;
-        if (colObject.GetComponent<Image>().color.a <= 0)
-        {
-            IsAlphaReduced = true;
-        }
-        //yield return new WaitForSeconds(3f);
-        //gameObject.SetActive(false);
-    }
-
     public void OffObject(GameObject activateObject)
     {
         activateObject.transform.GetComponent<Image>().enabled = false;
-        //activateObject.SetActive(isTrue);
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
@@ -1520,11 +1473,12 @@ public class DragCGS : MonoBehaviour
                 gameObject.transform.GetChild(0).gameObject.SetActive(false);
             }
         }
-        else if (collision.gameObject.name == "MagnifyingGlass" && gameObject.name == "PinkGermParent")
-        {
-            gameObject.transform.GetComponent<PolygonCollider2D>().enabled = true;
-            gameObject.transform.GetChild(0).GetComponent<PolygonCollider2D>().enabled = false;
-        }
+        //if (collision.gameObject.name == "MagnifyingGlass" && gameObject.name == "PinkGermParent")
+        //{
+        //    print("dayd");
+        //    gameObject.transform.GetComponent<PolygonCollider2D>().enabled = true;
+        //    gameObject.transform.GetChild(0).GetComponent<PolygonCollider2D>().enabled = false;
+        //}
 
         inTrigger = false;
         //if (MouseDownIndicator) MouseDownIndicator.SetActive(true);
@@ -1532,19 +1486,10 @@ public class DragCGS : MonoBehaviour
     private void OnTriggerStay2D(Collider2D collision)
     {
         inTrigger = true;
-        //if (MouseDownIndicator) MouseDownIndicator.SetActive(false);
-
-        //if (collision.gameObject.name == "PinkGerm" && gameObject.name == "PinkGermsKiller")
-        //{
-
-        //}
     }
     private void OnEnable()
     {
         didTrigger = 0;
-        if (boxCollider) boxCollider.enabled = true;
-        if (m_Animator) m_Animator.enabled = false;
-        if (pingPong) pingPong.enabled = true;
     }
     private void OnDisable()
     {
