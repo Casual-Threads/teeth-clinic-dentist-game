@@ -231,23 +231,21 @@ public class TeethReparing : MonoBehaviour
             taskDoneParticle.gameObject.SetActive(true);
             action = TeethReparingActionPerform.Germs;
             StartCoroutine(EnableOrDisable(0.3f, waterOutPump, false));
+            StartCoroutine(EnableOrDisable(0.3f, secondWaterOutPump, false));
             StartCoroutine(EnableOrDisable(0.3f, teethReparingPanel, false));
             StartCoroutine(EnableOrDisable(0.5f, germsPanel, true));
             StartCoroutine(EnableOrDisable(0.5f, darkPanel, true));
-            //dirtyTeethLayer.SetActive(false);
-            //openMouth.sprite = cleanTeethLayer;
-            //print("All Task Done");
-            //StartCoroutine(LevelComplete());
+
         }
         else if (action == TeethReparingActionPerform.Germs)
         {
             taskDoneParticle.gameObject.SetActive(true);
-            action = TeethReparingActionPerform.Germs;
             StartCoroutine(EnableOrDisable(0.5f, germsPanel, false));
             StartCoroutine(EnableOrDisable(0.5f, darkPanel, false));
+            StartCoroutine(EnableOrDisable(0.5f, teethReparingPanel, true));
             StartCoroutine(EnableOrDisable(0.5f, teethShine, true));
-            //dirtyTeethLayer.SetActive(false);
-            //openMouth.sprite = cleanTeethLayer;
+            dirtyTeethLayer.SetActive(false);
+            openMouth.sprite = cleanTeethLayer;
             print("All Task Done");
             StartCoroutine(LevelComplete());
         }

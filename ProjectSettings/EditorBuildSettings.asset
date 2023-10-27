@@ -15,9 +15,18 @@ EditorBuildSettings:
     path: Assets/Scenes/Selection.unity
     guid: 6df2a8c553024f642bbbbbe3ac636b3d
   - enabled: 1
-    path: Assets/Scenes/TeethCleaning.unity
-    guid: 1db48052158c81c48aebdbe334743682
+    path: Assets/Scenes/TeethBraces.unity
+    guid: 432f7df3532c40c4b8ec455cd6da982b
+  - enabled: 1
+    path: Assets/Scenes/TeethGums.unity
+    guid: 60e014441e5bce049bd4803905442893
   - enabled: 1
     path: Assets/Scenes/TeethReparing.unity
-    guid: 72cc6a096c05c8744987261b643d85c4
+    guid: 7e9094b89790a424994add2be731367c
+  - enabled: 1
+    path: Assets/Scenes/TeethCleaning.unity
+    guid: 1db48052158c81c48aebdbe334743682
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
   m_configObjects: {}

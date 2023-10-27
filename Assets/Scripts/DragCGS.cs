@@ -29,13 +29,12 @@ public class DragCGS : MonoBehaviour
     TeethBraces TeethBracesController;
     TeethGums TeethGumsController;
     GermsKillingScript GermKillingController;
-    //ObjectOff ObjectOffController;
     public Transform  downParent;
     private int IndexOne = 0;
     private int IndexTwo = 0;
     private int IndexThree = 0;
     private bool IsAlphaReduced, isAlphaIncreased, IsSecondObjectAlphaReduced, isSecondObjectAlphaIncreased;
-    private bool isPinkGermOff, isBlueGermOff, isGreenGermOff, isOrangeGermOff;
+    //private bool isPinkGermOff, isBlueGermOff, isGreenGermOff, isOrangeGermOff;
 
     #region Start Region
     // Start is called before the first frame update
@@ -94,22 +93,9 @@ public class DragCGS : MonoBehaviour
     {
         MouseUp.Invoke();
         SoundStopSFX.Invoke();
-        //var _Renderers = GetComponentsInChildren<Renderer>();
-        //for (int i = 0; i < _Renderers.Length; i++)
-        //{
-        //    _Renderers[i].sortingOrder = upSortinggOrder;
-        //}
-        //if (pingPong) pingPong.enabled = true;
-        //if (MouseDownIndicator) MouseDownIndicator.SetActive(false);
-        //if (m_Animator) m_Animator.enabled = false;
-        //if (triggerParticles) triggerParticles.Stop();
         if (restPos)
         {
             transform.localPosition = InitialPosition;
-            //if (MouseUpIndicator)
-            //{
-            //    MouseUpIndicator.SetActive(true);
-            //}
         }
     }
 
@@ -225,6 +211,7 @@ public class DragCGS : MonoBehaviour
                         {
                             IndexOne = 0;
                             TeethCleaningController.TaskDone();
+                            TeethCleaningController.burshSFX.Stop();
                         }
 
                     }
@@ -249,6 +236,7 @@ public class DragCGS : MonoBehaviour
                         {
                             IndexOne = 0;
                             TeethCleaningController.TaskDone();
+                            TeethCleaningController.excavatorSFX.Stop();
                         }
 
                     }
@@ -272,6 +260,7 @@ public class DragCGS : MonoBehaviour
                         IndexOne++;
                         if (IndexOne == 4)
                         {
+                            TeethCleaningController.grinderSFX.Stop();
                             IndexOne = 0;
                             TeethCleaningController.TaskDone();
                         }
@@ -297,6 +286,7 @@ public class DragCGS : MonoBehaviour
                         {
                             IndexOne = 0;
                             TeethCleaningController.TaskDone();
+                            TeethCleaningController.drillSFX.Stop();
                         }
 
                     }
@@ -320,6 +310,7 @@ public class DragCGS : MonoBehaviour
                         {
                             IndexOne = 0;
                             TeethCleaningController.TaskDone();
+                            TeethCleaningController.chewPullerSFX.Stop();
                         }
 
                     }
@@ -341,6 +332,7 @@ public class DragCGS : MonoBehaviour
                         {
                             IndexOne = 0;
                             TeethCleaningController.TaskDone();
+                            TeethCleaningController.teethLaserSFX.Stop();
                         }
 
                     }
@@ -565,9 +557,9 @@ public class DragCGS : MonoBehaviour
                 }
                 if ((TeethReparingController.taskFillbar.fillAmount == 1 && IsAlphaReduced == true) && isAlphaIncreased == true)
                 {
-                    isSecondObjectAlphaIncreased = false;
                     TeethReparingController.TaskDone();
-                    SoundStopSFX.Invoke();
+                    TeethReparingController.drillSFX.Stop();
+                    //SoundStopSFX.Invoke();
                 }
             }
 
@@ -575,7 +567,7 @@ public class DragCGS : MonoBehaviour
             {
                 gameObject.transform.GetComponent<Animator>().enabled = true;
                 gameObject.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(true);
-                //TeethReparingController.drillSFX.Play();
+                TeethReparingController.drillSFX.Play();
 
                 if (col.gameObject.tag == "BlackDamagedTeethTag")
                 {
@@ -613,10 +605,7 @@ public class DragCGS : MonoBehaviour
                 if ((TeethReparingController.taskFillbar.fillAmount == 1 && isAlphaIncreased == true) && IsAlphaReduced == true)
                 {
                     TeethReparingController.drillSFX.Stop();
-                    isAlphaIncreased = false;
-                    isSecondObjectAlphaIncreased = false;
                     TeethReparingController.TaskDone();
-                    //SoundStopSFX.Invoke();
                 }
             }
 
@@ -672,7 +661,6 @@ public class DragCGS : MonoBehaviour
             else if (col.gameObject.tag == "GreenDotTag" && gameObject.name == "TeethLaser")
             {
                 TeethReparingController.teethLaserSFX.Play();
-                //col.transform.GetChild(0).gameObject.SetActive(false);
                 if (col.gameObject.tag == "GreenDotTag")
                 {
                     col.transform.DOScale(new Vector3(0f, 0f, 0f), 3f);
@@ -684,6 +672,7 @@ public class DragCGS : MonoBehaviour
                         if (IndexOne == 4)
                         {
                             IndexOne = 0;
+                            TeethReparingController.teethLaserSFX.Stop();
                             TeethReparingController.TaskDone();
                         }
 
@@ -693,7 +682,6 @@ public class DragCGS : MonoBehaviour
 
             else if (col.gameObject.name == "WaterLayer" && gameObject.name == "WaterPipe")
             {
-                TeethReparingController.teethLaserSFX.Play();
                 gameObject.transform.GetChild(0).gameObject.SetActive(true);
                 if (col.gameObject.name == "WaterLayer")
                 {
@@ -716,8 +704,7 @@ public class DragCGS : MonoBehaviour
 
             else if (col.gameObject.name == "WaterForPump" && gameObject.name == "WateringOutPump")
             {
-                print("yes");
-                TeethReparingController.teethLaserSFX.Play();
+
                 gameObject.transform.gameObject.SetActive(false);
                 TeethReparingController.secondWaterOutPump.SetActive(true);
                 if (col.gameObject.name == "WaterForPump")
@@ -823,7 +810,7 @@ public class DragCGS : MonoBehaviour
             else if ((col.gameObject.tag == "SingleTeethTag" || col.gameObject.tag == "EmptyTag") && gameObject.name == "Brush")
             {          
                 gameObject.transform.GetChild(0).GetChild(0).gameObject.SetActive(true);
-                //TeethReparingController.burshSFX.Play();
+                TeethBracesController.burshSFX.Play();
                 SoundPlaySFX.Invoke();
                 if (col.gameObject.tag == "SingleTeethTag")
                 {
@@ -840,6 +827,7 @@ public class DragCGS : MonoBehaviour
                         {
                             isAlphaIncreased = true;
                             IndexOne = 0;
+                            TeethBracesController.burshSFX.Stop();
                         }
 
                     }
@@ -895,8 +883,6 @@ public class DragCGS : MonoBehaviour
 
             else if ((col.gameObject.tag == "DamagedTeethTag" || col.gameObject.tag == "BlackDamagedTeethTag" || col.gameObject.tag == "SingleTeethTag") && gameObject.name == "MiniMicro")
             {
-                //gameObject.transform.GetComponent<Animator>().enabled = true;
-                //TeethBracesController.drillSFX.Play();
 
                 if (col.gameObject.tag == "DamagedTeethTag")
                 {
@@ -956,10 +942,9 @@ public class DragCGS : MonoBehaviour
             else if (col.gameObject.tag == "DamagedTeethTag" && gameObject.name == "TeethCutter")
             {
                 TeethBracesController.teethTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
-                //TeethReparingController.drillSFX.Play();
                 col.transform.GetChild(0).gameObject.SetActive(true);
 
-                col.transform.GetChild(0).GetChild(0).GetComponent<PolygonCollider2D>().enabled = true;
+                //col.transform.GetChild(0).GetChild(0).GetComponent<PolygonCollider2D>().enabled = true;
                 if (col.gameObject.tag == "DamagedTeethTag")
                 {
                     if (downParent)
@@ -1054,7 +1039,6 @@ public class DragCGS : MonoBehaviour
             else if (col.gameObject.tag == "GreenDotTag" && gameObject.name == "TeethLaser")
             {
                 TeethBracesController.teethLaserSFX.Play();
-                //col.transform.GetChild(0).gameObject.SetActive(false);
                 if (col.gameObject.tag == "GreenDotTag")
                 {
                     col.transform.DOScale(new Vector3(0f, 0f, 0f), 3f);
@@ -1067,6 +1051,7 @@ public class DragCGS : MonoBehaviour
                         {
                             IndexOne = 0;
                             TeethBracesController.TaskDone();
+                            TeethBracesController.teethLaserSFX.Stop();
                         }
 
                     }
@@ -1294,10 +1279,6 @@ public class DragCGS : MonoBehaviour
                     gameObject.SetActive(false);
                     TeethGumsController.CottonImageOnTray();
                 }
-                //if (IsAlphaReduced == true)
-                //{
-                //    TeethGumsController.TaskDone();
-                //}
             }
             else if (col.gameObject.name == "InjuredPart" && gameObject.name == "MouthSpray")
             {
@@ -1358,7 +1339,6 @@ public class DragCGS : MonoBehaviour
             if (col.gameObject.name == "PinkGerm")
             {
                 col.enabled = false;
-                //TeethReparingController.teethLaserSFX.Play();
                 col.transform.DOScale(new Vector3(0f, 0f, 0f), 1f);
                 {
                     GermKillingController.taskFillbar.fillAmount += 0.125f;
@@ -1366,8 +1346,9 @@ public class DragCGS : MonoBehaviour
                     IndexOne++;
                     if (IndexOne == 2)
                     {
-                        isPinkGermOff = true;
+                        GermKillingController.isPinkGermOff = true;
                         IndexOne = 0;
+                        GermsTaskDone();
                     }
 
                 }
@@ -1378,7 +1359,6 @@ public class DragCGS : MonoBehaviour
             if (col.gameObject.name == "BlueGerm")
             {
                 col.enabled = false;
-                //GermKillingController.teethLaserSFX.Play();
                 col.transform.DOScale(new Vector3(0f, 0f, 0f), 1f);
                 {
                     GermKillingController.taskFillbar.fillAmount += 0.125f;
@@ -1386,8 +1366,9 @@ public class DragCGS : MonoBehaviour
                     IndexOne++;
                     if (IndexOne == 2)
                     {
-                        isBlueGermOff = true;
+                        GermKillingController.isBlueGermOff = true;
                         IndexOne = 0;
+                        GermsTaskDone();
                     }
 
                 }
@@ -1398,7 +1379,6 @@ public class DragCGS : MonoBehaviour
             if (col.gameObject.name == "GreenGerm")
             {
                 col.enabled = false;
-                //GermKillingController.teethLaserSFX.Play();
                 col.transform.DOScale(new Vector3(0f, 0f, 0f), 1f);
                 {
                     GermKillingController.taskFillbar.fillAmount += 0.125f;
@@ -1406,8 +1386,9 @@ public class DragCGS : MonoBehaviour
                     IndexOne++;
                     if (IndexOne == 2)
                     {
-                        isGreenGermOff = true;
+                        GermKillingController.isGreenGermOff = true;
                         IndexOne = 0;
+                        GermsTaskDone();
                     }
 
                 }
@@ -1418,7 +1399,6 @@ public class DragCGS : MonoBehaviour
             if (col.gameObject.name == "OrangeGerm")
             {
                 col.enabled = false;
-                //GermKillingController.teethLaserSFX.Play();
                 col.transform.DOScale(new Vector3(0f, 0f, 0f), 1f);
                 {
                     
@@ -1428,20 +1408,47 @@ public class DragCGS : MonoBehaviour
                     if (IndexOne == 2)
                     {
                         IndexOne = 0;
-                        isOrangeGermOff = true;
+                        GermKillingController.isOrangeGermOff = true;
+                        GermsTaskDone();
                     }
 
                 }
             }
         }
+
         #endregion
     }
 
     public void GermsTaskDone()
     {
-        if(isPinkGermOff == true && isBlueGermOff == true && isGreenGermOff == true && isOrangeGermOff == true)
+
+        if (TeethCleaningController)
         {
-            TeethReparingController.TaskDone();
+            if (GermKillingController.isPinkGermOff == true && GermKillingController.isBlueGermOff == true && GermKillingController.isGreenGermOff == true && GermKillingController.isOrangeGermOff == true)
+            {
+                TeethCleaningController.TaskDone();
+            }
+        }        
+        else if (TeethReparingController)
+        {
+            if (GermKillingController.isPinkGermOff == true && GermKillingController.isBlueGermOff == true && GermKillingController.isGreenGermOff == true && GermKillingController.isOrangeGermOff == true)
+            {  
+                TeethReparingController.TaskDone();
+            }
+        }       
+        else if (TeethBracesController)
+        {
+            if (GermKillingController.isPinkGermOff == true && GermKillingController.isBlueGermOff == true && GermKillingController.isGreenGermOff == true && GermKillingController.isOrangeGermOff == true)
+            {
+                TeethBracesController.TaskDone();
+            }
+        }       
+        else if (TeethGumsController)
+        {
+            if (GermKillingController.isPinkGermOff == true && GermKillingController.isBlueGermOff == true && GermKillingController.isGreenGermOff == true && GermKillingController.isOrangeGermOff == true)
+            {
+                TeethGumsController.TaskDone();
+            }
         }
     } 
     public void LastTask()
@@ -1460,27 +1467,36 @@ public class DragCGS : MonoBehaviour
     {
         activateObject.transform.GetComponent<Image>().enabled = false;
     }
-    private void OnTriggerExit2D(Collider2D collision)
+    private void OnTriggerExit2D(Collider2D col)
     {
         if (TeethReparingController)
         {
-            if ((collision.gameObject.tag == "BlackDamagedTeethTag" || collision.gameObject.tag == "YellowDamagedTeethTag") && gameObject.name == "SecondDrill")
+            if ((col.gameObject.tag == "BlackDamagedTeethTag" || col.gameObject.tag == "YellowDamagedTeethTag") && gameObject.name == "SecondDrill")
             {
                 gameObject.transform.GetChild(0).GetChild(0).GetChild(0).gameObject.SetActive(false);
             }
-            else if (collision.gameObject.name == "WaterLayer" && gameObject.name == "WaterPipe")
+            else if (col.gameObject.name == "WaterLayer" && gameObject.name == "WaterPipe")
             {
                 gameObject.transform.GetChild(0).gameObject.SetActive(false);
             }
         }
-        //if (collision.gameObject.name == "MagnifyingGlass" && gameObject.name == "PinkGermParent")
-        //{
-        //    print("dayd");
-        //    gameObject.transform.GetComponent<PolygonCollider2D>().enabled = true;
-        //    gameObject.transform.GetChild(0).GetComponent<PolygonCollider2D>().enabled = false;
-        //}
+        else if (TeethGumsController)
+        {
+            if (col.gameObject.tag == "GreenDotTag" && gameObject.name == "LaserLight")
+            {
+                TeethGumsController.teethLaserSFX.Stop();
+            }
+        }
 
-        inTrigger = false;
+
+            //if (collision.gameObject.name == "MagnifyingGlass" && gameObject.name == "PinkGermParent")
+            //{
+            //    print("dayd");
+            //    gameObject.transform.GetComponent<PolygonCollider2D>().enabled = true;
+            //    gameObject.transform.GetChild(0).GetComponent<PolygonCollider2D>().enabled = false;
+            //}
+
+            inTrigger = false;
         //if (MouseDownIndicator) MouseDownIndicator.SetActive(true);
     }
     private void OnTriggerStay2D(Collider2D collision)

@@ -172,16 +172,11 @@ public class TeethBraces : MonoBehaviour
         {
             itemPickSFX.Play();
             teethCutter.transform.GetComponent<Image>().enabled = false;
-            //taskDoneParticle.gameObject.SetActive(true);
-            //StartCoroutine(EnableOrDisable(0.5f, teethCutter, false));
-            //StartCoroutine(EnableOrDisable(0.5f, spoonWithPot, true));
-            //AfterTaskDonePerform();
-            //StartCoroutine(AfterTaskColliderAndIndicationsOn());
         }
         else if (action == TeethBracesActionPerform.TeethLaser)
         {
             taskDoneParticle.gameObject.SetActive(true);
-            //action = TeethReparingActionPerform.PourWater;
+            action = TeethBracesActionPerform.Germs;
             StartCoroutine(ObjectEnableOrDisable(0.5f, teethLaser, false));
             StartCoroutine(ObjectEnableOrDisable(0.3f, TeethBracesPanel, false));
             StartCoroutine(ObjectEnableOrDisable(0.5f, germsPanel, true));
@@ -193,31 +188,18 @@ public class TeethBraces : MonoBehaviour
             AfterTaskDonePerform();
 
         }
-        //else if (action == TeethBracesActionPerform.WateringOut)
-        //{
-        //    taskDoneParticle.gameObject.SetActive(true);
-        //    action = TeethBracesActionPerform.Germs;
-        //    StartCoroutine(EnableOrDisable(0.3f, waterOutPump, false));
-        //    StartCoroutine(EnableOrDisable(0.3f, TeethBracesPanel, false));
-        //    StartCoroutine(EnableOrDisable(0.5f, germsPanel, true));
-        //    StartCoroutine(EnableOrDisable(0.5f, darkPanel, true));
-        //    //dirtyTeethLayer.SetActive(false);
-        //    //openMouth.sprite = cleanTeethLayer;
-        //    //print("All Task Done");
-        //    //StartCoroutine(LevelComplete());
-        //}
-        //else if (action == TeethBracesActionPerform.Germs)
-        //{
-        //    taskDoneParticle.gameObject.SetActive(true);
-        //    action = TeethBracesActionPerform.Germs;
-        //    StartCoroutine(EnableOrDisable(0.5f, germsPanel, false));
-        //    StartCoroutine(EnableOrDisable(0.5f, darkPanel, false));
-        //    StartCoroutine(EnableOrDisable(0.5f, teethShine, true));
-        //    //dirtyTeethLayer.SetActive(false);
-        //    //openMouth.sprite = cleanTeethLayer;
-        //    print("All Task Done");
-        //    StartCoroutine(LevelComplete());
-        //}
+        else if (action == TeethBracesActionPerform.Germs)
+        {
+            taskDoneParticle.gameObject.SetActive(true);
+            StartCoroutine(ObjectEnableOrDisable(0.5f, germsPanel, false));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, darkPanel, false));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, TeethBracesPanel, true));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, teethShine, true));
+            dirtyTeethLayer.SetActive(false);
+            //openMouth.sprite = cleanTeethLayer;
+            print("All Task Done");
+            StartCoroutine(LevelComplete());
+        }
     }
 
     IEnumerator AfterTaskColliderAndIndicationsOn()

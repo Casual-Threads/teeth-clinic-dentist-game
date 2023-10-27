@@ -55,7 +55,7 @@ public class TeethGums : MonoBehaviour
     public AudioSource itemPickSFX;
     public AudioSource itemDropSFX, burshSFX, excavatorSFX, teethLaserSFX;
     private bool isLight, isRateus, isMusic, isVibration;
-    private bool isToffee, isLemon, isFishBone, isStrawberry, isBubble;
+    
     AsyncOperation asyncLoad;
     public Transform downParent;
     void Start()
@@ -204,9 +204,10 @@ public class TeethGums : MonoBehaviour
             taskDoneParticle.gameObject.SetActive(true);
             StartCoroutine(ObjectEnableOrDisable(0.5f, germsPanel, false));
             StartCoroutine(ObjectEnableOrDisable(0.5f, darkPanel, false));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, teethGumsPanel, true));
             StartCoroutine(ObjectEnableOrDisable(0.5f, teethShine, true));
-            //dirtyTeethLayer.SetActive(false);
-            //openMouth.sprite = cleanTeethLayer;
+            dirtyTeethLayer.SetActive(false);
+            openMouth.sprite = cleanTeethLayer;
             print("All Task Done");
             StartCoroutine(LevelComplete());
         }
@@ -323,13 +324,6 @@ public class TeethGums : MonoBehaviour
         StartCoroutine(TrayIEnumerator());
     }
     #endregion
-
-    //private void ScopeTask()
-    //{
-    //    action = TeethGumsActionPerform.TeethLaser;
-    //    StartCoroutine(ObjectEnableOrDisable(0.5f, teethLaser, true));
-    //    AfterTaskDonePerform();
-    //}
 
     private void AfterTaskDonePerform()
     {

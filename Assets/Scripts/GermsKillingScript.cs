@@ -13,7 +13,8 @@ public class GermsKillingScript : MonoBehaviour
     public Image taskFillbar;
     public GameObject firstPinkGerm;
     public GameObject secondPinkGerm, firstBlueGerm, secondBlueGerm, firstGreenGerm, secondGreenGerm, firstOrangeGerm, secondOrangeGerm;
-    public AudioSource teethLaserSFX;
+    //public AudioSource teethLaserSFX;
+    public bool isPinkGermOff, isBlueGermOff, isGreenGermOff, isOrangeGermOff;
 
     // Start is called before the first frame update
     void Start()

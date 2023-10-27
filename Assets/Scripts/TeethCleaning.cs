@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 [System.Serializable]
 public enum TeethCleaningActionPerform
 {
-    none, Clipper, Brush, Excavator, Grinder, Drill, ChewPuller, TeethLaser
+    none, Clipper, Brush, Excavator, Grinder, Drill, ChewPuller, TeethLaser, Germs
 }
 
 public class TeethCleaning : MonoBehaviour
@@ -35,7 +35,7 @@ public class TeethCleaning : MonoBehaviour
     public GameObject dirtyTeethLayer, teethShine/*, indicationsObject*/;
     [Header("Panels")]
     public GameObject TeethCleaningPanel;
-    public GameObject levelCompletePanel, settingPanel, RateUsPanel, loadingPanel;
+    public GameObject levelCompletePanel, settingPanel, RateUsPanel, loadingPanel, germsPanel, darkPanel;
     [Header("Images")]
     public Image openMouth;
     public Image taskFillbar, loadingFillbar, lightImage, lightWhiteLayer, musicOnOffBtn, vibrationOnOffBtn;
@@ -47,7 +47,7 @@ public class TeethCleaning : MonoBehaviour
     public Image[] yellowGreenDurtIndications, blackTeethIndications, chewIndications, crackIndications;
     [Header("Sprites")]
     public Sprite goldStarSprite;
-    public Sprite grayStarSprite, onLightSprite, offLightSprite, cleanTeethLayer, onSprite, OffSprite;
+    public Sprite grayStarSprite, onLightSprite, offLightSprite, cleanTeethLayer, onSprite, offSprite;
     [Header("Particle System")]
     public ParticleSystem taskDoneParticle;
     public GameObject finalParticle;
@@ -92,7 +92,7 @@ public class TeethCleaning : MonoBehaviour
         if(isMusic == false)
         {
             isMusic = true;
-            musicOnOffBtn.sprite = OffSprite;
+            musicOnOffBtn.sprite = offSprite;
         }
         else if(isMusic == true)
         {
@@ -106,7 +106,7 @@ public class TeethCleaning : MonoBehaviour
         if(isVibration == false)
         {
             isVibration = true;
-            vibrationOnOffBtn.sprite = OffSprite;
+            vibrationOnOffBtn.sprite = offSprite;
         }
         else if(isVibration == true)
         {
@@ -208,10 +208,23 @@ public class TeethCleaning : MonoBehaviour
         else if(action == TeethCleaningActionPerform.TeethLaser)
         {
             taskDoneParticle.gameObject.SetActive(true);
+            action = TeethCleaningActionPerform.Germs;
             StartCoroutine(EnableOrDisable(0.5f, teethLaser, false));
+            StartCoroutine(EnableOrDisable(0.5f, germsPanel, true));
+            StartCoroutine(EnableOrDisable(0.5f, darkPanel, true));
+            StartCoroutine(EnableOrDisable(0.5f, TeethCleaningPanel, false));
+            AfterTaskDonePerform();
+
+        }
+        else if (action == TeethCleaningActionPerform.Germs)
+        {
+            taskDoneParticle.gameObject.SetActive(true);
+            StartCoroutine(EnableOrDisable(0.5f, germsPanel, false));
+            StartCoroutine(EnableOrDisable(0.5f, darkPanel, false));
+            StartCoroutine(EnableOrDisable(0.5f, TeethCleaningPanel, true));
+            StartCoroutine(EnableOrDisable(0.5f, teethShine, true));
             dirtyTeethLayer.SetActive(false);
             openMouth.sprite = cleanTeethLayer;
-            StartCoroutine(EnableOrDisable(0.5f, teethShine, true));
             print("All Task Done");
             StartCoroutine(LevelComplete());
         }
@@ -226,6 +239,7 @@ public class TeethCleaning : MonoBehaviour
             starImages[i].sprite = grayStarSprite;
         }
     }
+
     public void ObjectEnable(int index)
     {
 
