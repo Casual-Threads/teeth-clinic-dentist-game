@@ -22,8 +22,8 @@ public class DragCGS : MonoBehaviour
     //Gulfam Poration
     public UnityEvent MouseDown;
     public UnityEvent MouseUp;
-    public UnityEvent SoundPlaySFX;
-    public UnityEvent SoundStopSFX;
+    //public UnityEvent SoundPlaySFX;
+    //public UnityEvent SoundStopSFX;
     TeethCleaning TeethCleaningController;
     TeethReparing TeethReparingController;
     TeethBraces TeethBracesController;
@@ -92,7 +92,6 @@ public class DragCGS : MonoBehaviour
     void OnMouseUp()
     {
         MouseUp.Invoke();
-        SoundStopSFX.Invoke();
         if (restPos)
         {
             transform.localPosition = InitialPosition;
@@ -433,8 +432,7 @@ public class DragCGS : MonoBehaviour
             else if ((col.gameObject.tag == "SingleTeethTag" || col.gameObject.tag == "EmptyTag" || col.gameObject.tag == "ReparedTeethTag") && gameObject.name == "Brush")
             {
                 gameObject.transform.GetChild(0).GetChild(0).gameObject.SetActive(true);
-                //TeethReparingController.burshSFX.Play();
-                SoundPlaySFX.Invoke();
+                TeethReparingController.burshSFX.Play();
                 if (col.gameObject.tag == "SingleTeethTag")
                 {
                     col.GetComponent<Image>().color = new Color(1, 1, 1, col.GetComponent<Image>().color.a - 0.2f);
@@ -487,7 +485,7 @@ public class DragCGS : MonoBehaviour
                 }
                 if ((TeethReparingController.taskFillbar.fillAmount == 1 && isAlphaIncreased == true) && IsAlphaReduced == true && IsSecondObjectAlphaReduced == true)
                 {
-                    SoundStopSFX.Invoke();
+                    TeethReparingController.burshSFX.Stop();
                     TeethReparingController.TaskDone();
                 }
             }
@@ -510,7 +508,7 @@ public class DragCGS : MonoBehaviour
                         {
                             IndexOne = 0;
                             TeethReparingController.TaskDone();
-                            SoundStopSFX.Invoke();
+                            TeethReparingController.excavatorSFX.Stop();
                         }
 
                     }
@@ -559,7 +557,6 @@ public class DragCGS : MonoBehaviour
                 {
                     TeethReparingController.TaskDone();
                     TeethReparingController.drillSFX.Stop();
-                    //SoundStopSFX.Invoke();
                 }
             }
 
@@ -811,7 +808,6 @@ public class DragCGS : MonoBehaviour
             {          
                 gameObject.transform.GetChild(0).GetChild(0).gameObject.SetActive(true);
                 TeethBracesController.burshSFX.Play();
-                SoundPlaySFX.Invoke();
                 if (col.gameObject.tag == "SingleTeethTag")
                 {
                     col.GetComponent<Image>().color = new Color(1, 1, 1, 1);
@@ -851,7 +847,7 @@ public class DragCGS : MonoBehaviour
                 }
                 if (isAlphaIncreased == true &&  IsAlphaReduced == true)
                 {
-                    SoundStopSFX.Invoke();
+                    TeethBracesController.burshSFX.Stop();
                     TeethBracesController.TaskDone();
                 }
             }
@@ -874,7 +870,7 @@ public class DragCGS : MonoBehaviour
                         {
                             IndexOne = 0;
                             TeethBracesController.TaskDone();
-                            SoundStopSFX.Invoke();
+                            TeethBracesController.excavatorSFX.Stop();
                         }
 
                     }
@@ -935,7 +931,6 @@ public class DragCGS : MonoBehaviour
                 if (isAlphaIncreased == true && IsAlphaReduced == true && IsSecondObjectAlphaReduced == true)
                 {
                     TeethBracesController.TaskDone();
-                    SoundStopSFX.Invoke();
                 }
             }
 
@@ -989,6 +984,7 @@ public class DragCGS : MonoBehaviour
             }
             else if (col.gameObject.name == "LeftDown" && gameObject.name == "LeftDownGameObject")
             {
+                gameObject.transform.parent.GetChild(1).gameObject.SetActive(false);
                 gameObject.SetActive(false);
                 col.enabled = false;
                 col.gameObject.GetComponent<Image>().enabled = true;
@@ -996,6 +992,7 @@ public class DragCGS : MonoBehaviour
             }
             else if (col.gameObject.name == "DownMid" && gameObject.name == "DownMidGameObject")
             {
+                gameObject.transform.parent.GetChild(1).gameObject.SetActive(false);
                 gameObject.SetActive(false);
                 col.enabled = false;
                 col.gameObject.GetComponent<Image>().enabled = true;
@@ -1003,6 +1000,7 @@ public class DragCGS : MonoBehaviour
             }
             else if (col.gameObject.name == "RightSecondLast" && gameObject.name == "RightLastSecondGameObject")
             {
+                gameObject.transform.parent.GetChild(1).gameObject.SetActive(false);
                 gameObject.SetActive(false);
                 col.enabled = false;
                 col.gameObject.GetComponent<Image>().enabled = true;
@@ -1010,6 +1008,7 @@ public class DragCGS : MonoBehaviour
             }
             else if (col.gameObject.name == "UpperRight" && gameObject.name == "UpperRightGameObject")
             {
+                gameObject.transform.parent.GetChild(1).gameObject.SetActive(false);
                 gameObject.SetActive(false);
                 col.enabled = false;
                 col.gameObject.GetComponent<Image>().enabled = true;
@@ -1017,6 +1016,7 @@ public class DragCGS : MonoBehaviour
             }
             else if (col.gameObject.name == "UpperMid" && gameObject.name == "UpperMidGameObject")
             {
+                gameObject.transform.parent.GetChild(1).gameObject.SetActive(false);
                 gameObject.SetActive(false);
                 col.enabled = false;
                 col.gameObject.GetComponent<Image>().enabled = true;
@@ -1024,6 +1024,7 @@ public class DragCGS : MonoBehaviour
             }
             else if (col.gameObject.name == "UpperLeft" && gameObject.name == "UpperLeftGameObject")
             {
+                gameObject.transform.parent.GetChild(1).gameObject.SetActive(false);
                 gameObject.SetActive(false);
                 col.enabled = false;
                 col.gameObject.GetComponent<Image>().enabled = true;
@@ -1031,6 +1032,8 @@ public class DragCGS : MonoBehaviour
             }
             else if (col.gameObject.tag == "BraceSTag" && gameObject.name == "Brace")
             {
+
+                gameObject.transform.parent.parent.GetChild(1).gameObject.SetActive(false);
                 gameObject.SetActive(false);
                 col.enabled = false;
                 col.gameObject.GetComponent<Image>().enabled = true;
@@ -1155,8 +1158,7 @@ public class DragCGS : MonoBehaviour
             else if ((col.gameObject.tag == "SingleTeethTag" || col.gameObject.tag == "EmptyTag") && gameObject.name == "Brush")
             {
                 gameObject.transform.GetChild(0).GetChild(0).gameObject.SetActive(true);
-                //TeethReparingController.burshSFX.Play();
-                SoundPlaySFX.Invoke();
+                TeethGumsController.burshSFX.Play();
                 if (col.gameObject.tag == "SingleTeethTag")
                 {
                     col.GetComponent<Image>().color = new Color(1, 1, 1, 1);
@@ -1195,7 +1197,7 @@ public class DragCGS : MonoBehaviour
                 }
                 if (isAlphaIncreased == true && IsAlphaReduced == true)
                 {
-                    SoundStopSFX.Invoke();
+                    TeethGumsController.burshSFX.Stop();
                     TeethGumsController.TaskDone();
                 }
             }
@@ -1218,7 +1220,7 @@ public class DragCGS : MonoBehaviour
                         {
                             IndexOne = 0;
                             TeethGumsController.TaskDone();
-                            SoundStopSFX.Invoke();
+                            TeethGumsController.excavatorSFX.Stop();
                         }
 
                     }
@@ -1324,6 +1326,7 @@ public class DragCGS : MonoBehaviour
                         {
                             IndexOne = 0;
                             TeethGumsController.TaskDone();
+                            TeethGumsController.teethLaserSFX.Stop();
                         }
 
                     }
@@ -1480,24 +1483,8 @@ public class DragCGS : MonoBehaviour
                 gameObject.transform.GetChild(0).gameObject.SetActive(false);
             }
         }
-        else if (TeethGumsController)
-        {
-            if (col.gameObject.tag == "GreenDotTag" && gameObject.name == "LaserLight")
-            {
-                TeethGumsController.teethLaserSFX.Stop();
-            }
-        }
 
-
-            //if (collision.gameObject.name == "MagnifyingGlass" && gameObject.name == "PinkGermParent")
-            //{
-            //    print("dayd");
-            //    gameObject.transform.GetComponent<PolygonCollider2D>().enabled = true;
-            //    gameObject.transform.GetChild(0).GetComponent<PolygonCollider2D>().enabled = false;
-            //}
-
-            inTrigger = false;
-        //if (MouseDownIndicator) MouseDownIndicator.SetActive(true);
+        inTrigger = false;
     }
     private void OnTriggerStay2D(Collider2D collision)
     {
@@ -1521,7 +1508,6 @@ public class DragCGS : MonoBehaviour
     {
         yield return new WaitForSeconds(_Delay);
         activateObject.transform.GetComponent<Image>().enabled = isTrue;
-        //StartCoroutine(ObjectEnableOrDisable(1f, activateObject, false));
     }
 
 }

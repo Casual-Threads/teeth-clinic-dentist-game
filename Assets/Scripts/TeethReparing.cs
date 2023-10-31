@@ -35,7 +35,7 @@ public class TeethReparing : MonoBehaviour
     public GameObject emptyTray, dirtyTeethLayer, whiteTeethLayer, teethShine, waterLayer, pumpWaterLayer, secondWaterOutPump;
     [Header("Panels")]
     public GameObject teethReparingPanel;
-    public GameObject levelCompletePanel, settingPanel, RateUsPanel, loadingPanel, germsPanel, darkPanel;
+    public GameObject levelCompletePanel, settingPanel, rateUsPanel, loadingPanel, germsPanel, darkPanel, adPanel;
     [Header("Images")]
     public Image openMouth;
     public Image taskFillbar, loadingFillbar, lightImage, lightWhiteLayer, musicOnOffBtn, vibrationOnOffBtn;
@@ -50,18 +50,72 @@ public class TeethReparing : MonoBehaviour
     public Sprite grayStarSprite, onLightSprite, offLightSprite, cleanTeethLayer, onSprite, OffSprite;
     [Header("Particle System")]
     public ParticleSystem taskDoneParticle;
+    public ParticleSystem balloonParticle;
     public GameObject finalParticle;
     [Header("Sounds")]
     public AudioSource itemPickSFX;
-    public AudioSource itemDropSFX, burshSFX, excavatorSFX, drillSFX, teethLaserSFX;
+    public AudioSource itemDropSFX, burshSFX, excavatorSFX, drillSFX, teethLaserSFX, AudienceCheerSFX;
     private bool isLight, isRateus, isMusic, isVibration;
     AsyncOperation asyncLoad;
     private bool isCheck;
     public Transform downParent;
+    private bool canShowInterstitial;
+    private IEnumerator adDelayCouroutine;
+    public Text waitAdLoadTime;
     void Start()
     {
+        adDelayCouroutine = adDelay(30);
+        StartCoroutine(adDelayCouroutine);
+        Usman_SaveLoad.LoadProgress();
         action = TeethReparingActionPerform.Clipper;
     }
+    public void ShowInterstitial()
+    {
+        if (MyAdsManager.instance)
+        {
+            MyAdsManager.instance.ShowInterstitialAds();
+        }
+    }
+    #region ShowInterstitialAD
+    private void CheckInterstitialAD()
+    {
+        if (MyAdsManager.Instance != null)
+        {
+
+            if (MyAdsManager.Instance.IsInterstitialAvailable() && canShowInterstitial)
+            {
+                canShowInterstitial = !canShowInterstitial;
+                adDelayCouroutine = adDelay(30);
+                StartCoroutine(adDelayCouroutine);
+                StartCoroutine(showInterstitialAD());
+            }
+        }
+    }
+
+    IEnumerator showInterstitialAD()
+    {
+        if (adPanel)
+        {
+            adPanel.SetActive(true);
+            yield return new WaitForSeconds(1f);
+            waitAdLoadTime.text = "..2";
+            yield return new WaitForSeconds(1f);
+            waitAdLoadTime.text = ".1";
+            yield return new WaitForSeconds(1f);
+            waitAdLoadTime.text = "0";
+            yield return new WaitForSeconds(0.5f);
+            adPanel.SetActive(false);
+            yield return new WaitForSeconds(0.2f);
+            waitAdLoadTime.text = "...3";
+        }
+        ShowInterstitial();
+    }
+    IEnumerator adDelay(float _Delay)
+    {
+        yield return new WaitForSeconds(_Delay);
+        canShowInterstitial = !canShowInterstitial;
+    }
+    #endregion
 
     #region LightOnOFF
     public void LightOnOff()
@@ -114,6 +168,20 @@ public class TeethReparing : MonoBehaviour
         }
         settingPanel.SetActive(true);
     }
+
+    public void RateUsPanelOnOff()
+    {
+        if (SaveData.Instance.isRateUs == true)
+        {
+            SaveData.Instance.isRateUs = false;
+            rateUsPanel.SetActive(true);
+        }
+        else
+        {
+            StartCoroutine(LevelComplete());
+        }
+        Usman_SaveLoad.SaveProgress();
+    }
     #endregion
 
     #region Next Scene Load
@@ -136,8 +204,8 @@ public class TeethReparing : MonoBehaviour
         {
             taskDoneParticle.gameObject.SetActive(true);
             action = TeethReparingActionPerform.Excavator;
-            StartCoroutine(EnableOrDisable(0.5f, brush, false));
-            StartCoroutine(EnableOrDisable(0.5f, excavator, true));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, brush, false));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, excavator, true));
             AfterTaskDonePerform();
             for (int i = 0; i < durtLayer.Length; i++)
             {
@@ -151,8 +219,8 @@ public class TeethReparing : MonoBehaviour
         else if(action == TeethReparingActionPerform.Excavator)
         {
             taskDoneParticle.gameObject.SetActive(true);
-            StartCoroutine(EnableOrDisable(0.5f, excavator, false));
-            StartCoroutine(EnableOrDisable(0.5f, firstDrill, true));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, excavator, false));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, firstDrill, true));
             AfterTaskDonePerform();
             for (int i = 0; i < brownDamagedTeethLayer.Length; i++)
             {
@@ -167,8 +235,8 @@ public class TeethReparing : MonoBehaviour
         else if(action == TeethReparingActionPerform.FirstDrill)
         {
             taskDoneParticle.gameObject.SetActive(true);
-            StartCoroutine(EnableOrDisable(0.5f, firstDrill, false));
-            StartCoroutine(EnableOrDisable(0.5f, secondDrill, true));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, firstDrill, false));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, secondDrill, true));
             AfterTaskDonePerform();
             for (int i = 0; i < blackDamagedTeethLayer.Length; i++)
             {
@@ -183,8 +251,8 @@ public class TeethReparing : MonoBehaviour
         else if(action == TeethReparingActionPerform.SecondDrill)
         {
             taskDoneParticle.gameObject.SetActive(true);
-            StartCoroutine(EnableOrDisable(0.5f, secondDrill, false));
-            StartCoroutine(EnableOrDisable(0.5f, spoonWithPot, true));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, secondDrill, false));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, spoonWithPot, true));
             AfterTaskDonePerform();
             for (int i = 0; i < yellowDamagedTeethLayer.Length; i++)
             {
@@ -200,16 +268,16 @@ public class TeethReparing : MonoBehaviour
         {
             taskDoneParticle.gameObject.SetActive(true);
             action = TeethReparingActionPerform.TeethLaser;
-            StartCoroutine(EnableOrDisable(0.5f, spoonWithPot, false));
-            StartCoroutine(EnableOrDisable(0.5f, teethLaser, true));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, spoonWithPot, false));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, teethLaser, true));
             AfterTaskDonePerform();
         }
         else if(action == TeethReparingActionPerform.TeethLaser)
         {
             taskDoneParticle.gameObject.SetActive(true);
             action = TeethReparingActionPerform.PourWater;
-            StartCoroutine(EnableOrDisable(0.5f, teethLaser, false));
-            StartCoroutine(EnableOrDisable(0.5f, waterPipe, true));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, teethLaser, false));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, waterPipe, true));
             tray.SetActive(false);
             dirtyTeethLayer.SetActive(false);
             openMouth.sprite = cleanTeethLayer;
@@ -222,32 +290,32 @@ public class TeethReparing : MonoBehaviour
             action = TeethReparingActionPerform.WateringOut;
             waterLayer.SetActive(false);
             pumpWaterLayer.SetActive(true);
-            StartCoroutine(EnableOrDisable(0.5f, waterPipe, false));
-            StartCoroutine(EnableOrDisable(0.5f, waterOutPump, true));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, waterPipe, false));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, waterOutPump, true));
             AfterTaskDonePerform();
         }
         else if (action == TeethReparingActionPerform.WateringOut)
         {
             taskDoneParticle.gameObject.SetActive(true);
             action = TeethReparingActionPerform.Germs;
-            StartCoroutine(EnableOrDisable(0.3f, waterOutPump, false));
-            StartCoroutine(EnableOrDisable(0.3f, secondWaterOutPump, false));
-            StartCoroutine(EnableOrDisable(0.3f, teethReparingPanel, false));
-            StartCoroutine(EnableOrDisable(0.5f, germsPanel, true));
-            StartCoroutine(EnableOrDisable(0.5f, darkPanel, true));
+            StartCoroutine(ObjectEnableOrDisable(0.3f, waterOutPump, false));
+            StartCoroutine(ObjectEnableOrDisable(0.3f, secondWaterOutPump, false));
+            StartCoroutine(ObjectEnableOrDisable(0.3f, teethReparingPanel, false));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, germsPanel, true));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, darkPanel, true));
 
         }
         else if (action == TeethReparingActionPerform.Germs)
         {
             taskDoneParticle.gameObject.SetActive(true);
-            StartCoroutine(EnableOrDisable(0.5f, germsPanel, false));
-            StartCoroutine(EnableOrDisable(0.5f, darkPanel, false));
-            StartCoroutine(EnableOrDisable(0.5f, teethReparingPanel, true));
-            StartCoroutine(EnableOrDisable(0.5f, teethShine, true));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, germsPanel, false));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, darkPanel, false));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, teethReparingPanel, true));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, teethShine, true));
             dirtyTeethLayer.SetActive(false);
             openMouth.sprite = cleanTeethLayer;
             print("All Task Done");
-            StartCoroutine(LevelComplete());
+            Invoke("RateUsPanelOnOff", 2f);
         }
     }
 
@@ -345,15 +413,16 @@ public class TeethReparing : MonoBehaviour
         taskFillbar.fillAmount += 0.1f;
         TaskFillBar();
         itemDropSFX.Play();
-        StartCoroutine(EnableOrDisable(0.5f, clipper, true));
+        StartCoroutine(ObjectEnableOrDisable(0.5f, clipper, true));
+        clipper.GetComponent<ScalePingPong>().enabled = true;
         if (trayImages[0].gameObject.activeSelf && trayImages[1].gameObject.activeSelf && trayImages[2].gameObject.activeSelf && trayImages[3].gameObject.activeSelf
             && trayImages[4].gameObject.activeSelf && trayImages[5].gameObject.activeSelf && trayImages[6].gameObject.activeSelf && trayImages[7].gameObject.activeSelf
             && trayImages[8].gameObject.activeSelf && trayImages[9].gameObject.activeSelf)
         {
             taskDoneParticle.gameObject.SetActive(true);
             action = TeethReparingActionPerform.Brush;
-            StartCoroutine(EnableOrDisable(0.5f, brush, true));
-            StartCoroutine(EnableOrDisable(0.5f, clipper, false));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, brush, true));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, clipper, false));
             AfterTaskDonePerform();
         }
         StartCoroutine(TrayIEnumerator());
@@ -361,7 +430,7 @@ public class TeethReparing : MonoBehaviour
     #endregion
     private void AfterTaskDonePerform()
     {
-        StartCoroutine(EnableOrDisable(2f, taskDoneParticle.gameObject, false));
+        StartCoroutine(ObjectEnableOrDisable(2f, taskDoneParticle.gameObject, false));
         taskFillbar.fillAmount = 0f;
         for (int i = 0; i < starImages.Length; i++)
         {
@@ -394,10 +463,12 @@ public class TeethReparing : MonoBehaviour
     IEnumerator LevelComplete()
     {
         yield return new WaitForSeconds(3f);
-        StartCoroutine(EnableOrDisable(0.5f, levelCompletePanel, true));
-        StartCoroutine(EnableOrDisable(0.7f, finalParticle, true));
+        StartCoroutine(ObjectEnableOrDisable(0.5f, levelCompletePanel, true));
+        AudienceCheerSFX.Play();
+        StartCoroutine(ObjectEnableOrDisable(0.7f, finalParticle, true));
+        StartCoroutine(ObjectEnableOrDisable(0.7f, balloonParticle.gameObject, true));
     }
-    
+
     IEnumerator LoadingScene(string str)
     {
         asyncLoad = SceneManager.LoadSceneAsync(str);
@@ -414,7 +485,7 @@ public class TeethReparing : MonoBehaviour
     #endregion
 
     #region EnableOrDisable
-    IEnumerator EnableOrDisable(float _Delay, GameObject activateObject, bool isTrue)
+    IEnumerator ObjectEnableOrDisable(float _Delay, GameObject activateObject, bool isTrue)
     {
         yield return new WaitForSecondsRealtime(_Delay);
         activateObject.SetActive(isTrue);

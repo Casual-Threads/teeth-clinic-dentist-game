@@ -35,7 +35,7 @@ public class TeethBraces : MonoBehaviour
     public GameObject emptyTray, teethTray, newTeethTray, dirtyTeethLayer, whiteTeethLayer, whiteSingleTeethLayer, teethShine;
     [Header("Panels")]
     public GameObject TeethBracesPanel;
-    public GameObject levelCompletePanel, settingPanel, RateUsPanel, loadingPanel, germsPanel, darkPanel;
+    public GameObject levelCompletePanel, settingPanel, rateUsPanel, loadingPanel, germsPanel, darkPanel, adPanel;
     [Header("Images")]
     public Image openMouth;
     public Image taskFillbar, loadingFillbar, lightImage, lightWhiteLayer, musicOnOffBtn, vibrationOnOffBtn, bracedTeethLayer;
@@ -51,20 +51,74 @@ public class TeethBraces : MonoBehaviour
     public Sprite grayStarSprite, onLightSprite, offLightSprite, cleanTeethLayer, onSprite, OffSprite;
     [Header("Particle System")]
     public ParticleSystem taskDoneParticle;
+    public ParticleSystem balloonParticle;
     public GameObject finalParticle;
     [Header("Sounds")]
     public AudioSource itemPickSFX;
-    public AudioSource itemDropSFX, burshSFX, excavatorSFX, drillSFX, teethLaserSFX;
+    public AudioSource itemDropSFX, burshSFX, excavatorSFX, drillSFX, teethLaserSFX, AudienceCheerSFX;
     private bool isLight, isRateus, isMusic, isVibration;
     AsyncOperation asyncLoad;
-    private bool isCheck;
     private int NewTeethInsertIndex = 0;
     private int bracesIndex = 0;
     public Transform downParent;
+    private bool canShowInterstitial;
+    private IEnumerator adDelayCouroutine;
+    public Text waitAdLoadTime;
     void Start()
     {
+        adDelayCouroutine = adDelay(30);
+        StartCoroutine(adDelayCouroutine);
+        Usman_SaveLoad.LoadProgress();
         action = TeethBracesActionPerform.Clipper;
     }
+
+    public void ShowInterstitial()
+    {
+        if (MyAdsManager.instance)
+        {
+            MyAdsManager.instance.ShowInterstitialAds();
+        }
+    }
+    #region ShowInterstitialAD
+    private void CheckInterstitialAD()
+    {
+        if (MyAdsManager.Instance != null)
+        {
+
+            if (MyAdsManager.Instance.IsInterstitialAvailable() && canShowInterstitial)
+            {
+                canShowInterstitial = !canShowInterstitial;
+                adDelayCouroutine = adDelay(30);
+                StartCoroutine(adDelayCouroutine);
+                StartCoroutine(showInterstitialAD());
+            }
+        }
+    }
+
+    IEnumerator showInterstitialAD()
+    {
+        if (adPanel)
+        {
+            adPanel.SetActive(true);
+            yield return new WaitForSeconds(1f);
+            waitAdLoadTime.text = "..2";
+            yield return new WaitForSeconds(1f);
+            waitAdLoadTime.text = ".1";
+            yield return new WaitForSeconds(1f);
+            waitAdLoadTime.text = "0";
+            yield return new WaitForSeconds(0.5f);
+            adPanel.SetActive(false);
+            yield return new WaitForSeconds(0.2f);
+            waitAdLoadTime.text = "...3";
+        }
+        ShowInterstitial();
+    }
+    IEnumerator adDelay(float _Delay)
+    {
+        yield return new WaitForSeconds(_Delay);
+        canShowInterstitial = !canShowInterstitial;
+    }
+    #endregion
 
     #region LightOnOFF
     public void LightOnOff()
@@ -124,6 +178,20 @@ public class TeethBraces : MonoBehaviour
     {
         loadingPanel.SetActive(true);
         StartCoroutine(LoadingScene(str));
+    }
+
+    public void RateUsPanelOnOff()
+    {
+        if (SaveData.Instance.isRateUs == true)
+        {
+            SaveData.Instance.isRateUs = false;
+            rateUsPanel.SetActive(true);
+        }
+        else
+        {
+            StartCoroutine(LevelComplete());
+        }
+        Usman_SaveLoad.SaveProgress();
     }
     #endregion
 
@@ -196,9 +264,8 @@ public class TeethBraces : MonoBehaviour
             StartCoroutine(ObjectEnableOrDisable(0.5f, TeethBracesPanel, true));
             StartCoroutine(ObjectEnableOrDisable(0.5f, teethShine, true));
             dirtyTeethLayer.SetActive(false);
-            //openMouth.sprite = cleanTeethLayer;
             print("All Task Done");
-            StartCoroutine(LevelComplete());
+            Invoke("RateUsPanelOnOff", 2f);
         }
     }
 
@@ -287,9 +354,9 @@ public class TeethBraces : MonoBehaviour
         {
             taskDoneParticle.gameObject.SetActive(true);
             action = TeethBracesActionPerform.NewTeethInsert;
-            //StartCoroutine(EnableOrDisable(0.5f, brush, true));
             StartCoroutine(ImageEnableOrDisable(0.5f, teethCutter, false));
             newTeethTray.transform.DOLocalMove(new Vector3(-19f, -746f, 0), 1f);
+            StartCoroutine(ObjectEnableOrDisable(1.2f, newTeethTray.transform.GetChild(1).gameObject, true));
             AfterTaskDonePerform();
         }
         StartCoroutine(TrayIEnumerator());
@@ -348,6 +415,7 @@ public class TeethBraces : MonoBehaviour
         TaskFillBar();
         itemDropSFX.Play();
         StartCoroutine(ObjectEnableOrDisable(0.5f, clipper, true));
+        clipper.GetComponent<ScalePingPong>().enabled = true;
         if (trayImages[0].gameObject.activeSelf && trayImages[1].gameObject.activeSelf && trayImages[2].gameObject.activeSelf && trayImages[3].gameObject.activeSelf
             && trayImages[4].gameObject.activeSelf && trayImages[5].gameObject.activeSelf && trayImages[6].gameObject.activeSelf && trayImages[7].gameObject.activeSelf
             && trayImages[8].gameObject.activeSelf && trayImages[9].gameObject.activeSelf)
@@ -362,7 +430,7 @@ public class TeethBraces : MonoBehaviour
     }
     #endregion
 
-    #region Brace  Task Done
+    #region New Teeth Insert
     // First Task Tray Image On 1 by 1
     public void NewTeetInsert()
     {
@@ -437,11 +505,14 @@ public class TeethBraces : MonoBehaviour
     }
     IEnumerator LevelComplete()
     {
+        
         yield return new WaitForSeconds(3f);
         StartCoroutine(ObjectEnableOrDisable(0.5f, levelCompletePanel, true));
+        AudienceCheerSFX.Play();
         StartCoroutine(ObjectEnableOrDisable(0.7f, finalParticle, true));
+        StartCoroutine(ObjectEnableOrDisable(0.7f, balloonParticle.gameObject, true));
     }
-    
+
     IEnumerator LoadingScene(string str)
     {
         asyncLoad = SceneManager.LoadSceneAsync(str);
