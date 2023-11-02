@@ -110,28 +110,34 @@ public class DragCGS : MonoBehaviour
                 gameObject.SetActive(false);
                 TeethCleaningController.ObjectEnable(0);
             }
+
             else if (col.gameObject.name == "EmptyTray" && gameObject.name == "LemonAnim")
             {
                 gameObject.SetActive(false);
                 TeethCleaningController.ObjectEnable(1);
             }
+
             else if (col.gameObject.name == "EmptyTray" && gameObject.name == "FishAnim")
             {
                 gameObject.SetActive(false);
                 TeethCleaningController.ObjectEnable(2);
             }
+
             else if (col.gameObject.name == "EmptyTray" && gameObject.name == "StrawberryAnim")
             {
                 gameObject.SetActive(false);
                 TeethCleaningController.ObjectEnable(3);
             }
+
             else if (col.gameObject.name == "EmptyTray" && gameObject.name == "BubbleAnim")
             {
                 gameObject.SetActive(false);
                 TeethCleaningController.ObjectEnable(4);
             }
+
             else if (col.gameObject.name == "Toffee" && gameObject.name == "Clipper")
             {
+                gameObject.SetActive(false);
                 TeethCleaningController.tray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
                 col.gameObject.transform.GetComponent<BoxCollider2D>().enabled = false;
                 col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
@@ -144,6 +150,7 @@ public class DragCGS : MonoBehaviour
             }
             else if (col.gameObject.name == "Lemon" && gameObject.name == "Clipper")
             {
+                gameObject.SetActive(false);
                 TeethCleaningController.tray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
                 col.gameObject.transform.GetComponent<PolygonCollider2D>().enabled = false;
                 col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
@@ -154,8 +161,10 @@ public class DragCGS : MonoBehaviour
                 }
                 TeethCleaningController.TaskDone();
             }
+
             else if (col.gameObject.name == "FishBone" && gameObject.name == "Clipper")
             {
+                gameObject.SetActive(false);
                 TeethCleaningController.tray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
                 col.gameObject.transform.GetComponent<PolygonCollider2D>().enabled = false;
                 col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
@@ -166,8 +175,10 @@ public class DragCGS : MonoBehaviour
                 }
                 TeethCleaningController.TaskDone();
             }
+
             else if (col.gameObject.name == "Strawberry" && gameObject.name == "Clipper")
             {
+                gameObject.SetActive(false);
                 TeethCleaningController.tray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
                 col.gameObject.transform.GetComponent<PolygonCollider2D>().enabled = false;
                 col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
@@ -178,8 +189,10 @@ public class DragCGS : MonoBehaviour
                 }
                 TeethCleaningController.TaskDone();
             }
+
             else if (col.gameObject.name == "BubbleGum" && gameObject.name == "Clipper")
             {
+                gameObject.SetActive(false);
                 TeethCleaningController.tray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
                 col.gameObject.transform.GetComponent<PolygonCollider2D>().enabled = false;
                 col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
@@ -370,6 +383,7 @@ public class DragCGS : MonoBehaviour
             }
             else if (col.gameObject.name == "Toffee" && gameObject.name == "Clipper")
             {
+                gameObject.SetActive(false);
                 TeethReparingController.emptyTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
                 col.gameObject.transform.GetComponent<BoxCollider2D>().enabled = false;
                 col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
@@ -382,6 +396,7 @@ public class DragCGS : MonoBehaviour
             }
             else if (col.gameObject.name == "Lemon" && gameObject.name == "Clipper")
             {
+                gameObject.SetActive(false);
                 TeethReparingController.emptyTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
                 col.gameObject.transform.GetComponent<PolygonCollider2D>().enabled = false;
                 col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
@@ -394,6 +409,7 @@ public class DragCGS : MonoBehaviour
             }
             else if (col.gameObject.name == "FishBone" && gameObject.name == "Clipper")
             {
+                gameObject.SetActive(false);
                 TeethReparingController.emptyTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
                 col.gameObject.transform.GetComponent<PolygonCollider2D>().enabled = false;
                 col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
@@ -406,6 +422,7 @@ public class DragCGS : MonoBehaviour
             }
             else if (col.gameObject.name == "Strawberry" && gameObject.name == "Clipper")
             {
+                gameObject.SetActive(false);
                 TeethReparingController.emptyTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
                 col.gameObject.transform.GetComponent<PolygonCollider2D>().enabled = false;
                 col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
@@ -418,6 +435,7 @@ public class DragCGS : MonoBehaviour
             }
             else if (col.gameObject.name == "BubbleGum" && gameObject.name == "Clipper")
             {
+                gameObject.SetActive(false);
                 TeethReparingController.emptyTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
                 col.gameObject.transform.GetComponent<PolygonCollider2D>().enabled = false;
                 col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
@@ -723,28 +741,34 @@ public class DragCGS : MonoBehaviour
                 gameObject.SetActive(false);
                 TeethBracesController.ObjectEnableInTray(0);
             }
+
             else if (col.gameObject.name == "EmptyTray" && gameObject.name == "LemonAnim")
             {
                 gameObject.SetActive(false);
                 TeethBracesController.ObjectEnableInTray(1);
             }
+
             else if (col.gameObject.name == "EmptyTray" && gameObject.name == "FishAnim")
             {
                 gameObject.SetActive(false);
                 TeethBracesController.ObjectEnableInTray(2);
             }
+
             else if (col.gameObject.name == "EmptyTray" && gameObject.name == "StrawberryAnim")
             {
                 gameObject.SetActive(false);
                 TeethBracesController.ObjectEnableInTray(3);
             }
+
             else if (col.gameObject.name == "EmptyTray" && gameObject.name == "BubbleAnim")
             {
                 gameObject.SetActive(false);
                 TeethBracesController.ObjectEnableInTray(4);
             }
+
             else if (col.gameObject.name == "Toffee" && gameObject.name == "Clipper")
             {
+                gameObject.SetActive(false);
                 TeethBracesController.emptyTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
                 col.gameObject.transform.GetComponent<BoxCollider2D>().enabled = false;
                 col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
@@ -755,8 +779,10 @@ public class DragCGS : MonoBehaviour
                 }
                 TeethBracesController.TaskDone();
             }
+
             else if (col.gameObject.name == "Lemon" && gameObject.name == "Clipper")
             {
+                gameObject.SetActive(false);
                 TeethBracesController.emptyTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
                 col.gameObject.transform.GetComponent<PolygonCollider2D>().enabled = false;
                 col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
@@ -767,8 +793,10 @@ public class DragCGS : MonoBehaviour
                 }
                 TeethBracesController.TaskDone();
             }
+
             else if (col.gameObject.name == "FishBone" && gameObject.name == "Clipper")
             {
+                gameObject.SetActive(false);
                 TeethBracesController.emptyTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
                 col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
                 col.gameObject.transform.GetComponent<PolygonCollider2D>().enabled = false;
@@ -779,8 +807,10 @@ public class DragCGS : MonoBehaviour
                 }
                 TeethBracesController.TaskDone();
             }
+
             else if (col.gameObject.name == "Strawberry" && gameObject.name == "Clipper")
             {
+                gameObject.SetActive(false);
                 TeethBracesController.emptyTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
                 col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
                 col.gameObject.transform.GetComponent<PolygonCollider2D>().enabled = false;
@@ -791,8 +821,10 @@ public class DragCGS : MonoBehaviour
                 }
                 TeethBracesController.TaskDone();
             }
+
             else if (col.gameObject.name == "BubbleGum" && gameObject.name == "Clipper")
             {
+                gameObject.SetActive(false);
                 TeethBracesController.emptyTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
                 col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
                 col.transform.GetChild(0).gameObject.SetActive(true);
@@ -936,10 +968,9 @@ public class DragCGS : MonoBehaviour
 
             else if (col.gameObject.tag == "DamagedTeethTag" && gameObject.name == "TeethCutter")
             {
+                gameObject.transform.GetComponent<PolygonCollider2D>().enabled = false;
                 TeethBracesController.teethTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
                 col.transform.GetChild(0).gameObject.SetActive(true);
-
-                //col.transform.GetChild(0).GetChild(0).GetComponent<PolygonCollider2D>().enabled = true;
                 if (col.gameObject.tag == "DamagedTeethTag")
                 {
                     if (downParent)
@@ -947,7 +978,7 @@ public class DragCGS : MonoBehaviour
                         col.transform.GetChild(0).GetChild(0).parent = downParent;
                     }
 
-                    StartCoroutine(ImageEnableOrDisable(1.8f, col.gameObject, false));
+                    StartCoroutine(ImageEnableOrDisable(1.5f, col.gameObject, false));
                     TeethBracesController.TaskDone();
                 }
 
@@ -1044,7 +1075,7 @@ public class DragCGS : MonoBehaviour
                 TeethBracesController.teethLaserSFX.Play();
                 if (col.gameObject.tag == "GreenDotTag")
                 {
-                    col.transform.DOScale(new Vector3(0f, 0f, 0f), 3f);
+                    col.transform.DOScale(new Vector3(0f, 0f, 0f), 4f);
                     {
                         col.enabled = false;
                         TeethBracesController.taskFillbar.fillAmount += 0.25f;
@@ -1096,6 +1127,7 @@ public class DragCGS : MonoBehaviour
             }
             else if (col.gameObject.name == "Toffee" && gameObject.name == "Clipper")
             {
+                gameObject.SetActive(false);
                 TeethGumsController.emptyTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
                 col.gameObject.transform.GetComponent<BoxCollider2D>().enabled = false;
                 col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
@@ -1108,6 +1140,7 @@ public class DragCGS : MonoBehaviour
             }
             else if (col.gameObject.name == "Lemon" && gameObject.name == "Clipper")
             {
+                gameObject.SetActive(false);
                 TeethGumsController.emptyTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
                 col.gameObject.transform.GetComponent<PolygonCollider2D>().enabled = false;
                 col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
@@ -1120,6 +1153,7 @@ public class DragCGS : MonoBehaviour
             }
             else if (col.gameObject.name == "FishBone" && gameObject.name == "Clipper")
             {
+                gameObject.SetActive(false);
                 TeethGumsController.emptyTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
                 col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
                 col.gameObject.transform.GetComponent<PolygonCollider2D>().enabled = false;
@@ -1132,6 +1166,7 @@ public class DragCGS : MonoBehaviour
             }
             else if (col.gameObject.name == "Strawberry" && gameObject.name == "Clipper")
             {
+                gameObject.SetActive(false);
                 TeethGumsController.emptyTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
                 col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
                 col.enabled = false;
@@ -1144,6 +1179,7 @@ public class DragCGS : MonoBehaviour
             }
             else if (col.gameObject.name == "BubbleGum" && gameObject.name == "Clipper")
             {
+                gameObject.SetActive(false);
                 TeethGumsController.emptyTray.transform.DOLocalMove(new Vector3(-540f, -344f, 0), 1f);
                 col.transform.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
                 col.transform.GetChild(0).gameObject.SetActive(true);

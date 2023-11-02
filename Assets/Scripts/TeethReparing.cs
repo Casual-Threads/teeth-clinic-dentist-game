@@ -32,13 +32,13 @@ public class TeethReparing : MonoBehaviour
     public GameObject brush, excavator, firstDrill, secondDrill, spoonWithPot, teethLaser, waterPipe, waterOutPump;
     [Header("Items Layers")]
     public GameObject tray;
-    public GameObject emptyTray, dirtyTeethLayer, whiteTeethLayer, teethShine, waterLayer, pumpWaterLayer, secondWaterOutPump;
+    public GameObject emptyTray, dirtyTeethLayer, whiteTeethLayer, teethShine, waterLayer, pumpWaterLayer, secondWaterOutPump, lightIndication, trayHandIndication;
     [Header("Panels")]
     public GameObject teethReparingPanel;
     public GameObject levelCompletePanel, settingPanel, rateUsPanel, loadingPanel, germsPanel, darkPanel, adPanel;
     [Header("Images")]
     public Image openMouth;
-    public Image taskFillbar, loadingFillbar, lightImage, lightWhiteLayer, musicOnOffBtn, vibrationOnOffBtn;
+    public Image taskFillbar, loadingFillbar, lightHolder, lightWhiteLayer, musicOnOffBtn, vibrationOnOffBtn;
     [Header("Image Arrays")]
     public Image[] trayImages;
     public Image[] starImages;
@@ -47,7 +47,7 @@ public class TeethReparing : MonoBehaviour
     public Image[] brownDamagedTeethLayer, blackDamagedTeethLayer, yellowDamagedTeethLayer;
     [Header("Sprites")]
     public Sprite goldStarSprite;
-    public Sprite grayStarSprite, onLightSprite, offLightSprite, cleanTeethLayer, onSprite, OffSprite;
+    public Sprite grayStarSprite, lightOnSprite, lightOffSprite, cleanTeethLayer, btnOnSprite, btnOffSprite;
     [Header("Particle System")]
     public ParticleSystem taskDoneParticle;
     public ParticleSystem balloonParticle;
@@ -55,6 +55,7 @@ public class TeethReparing : MonoBehaviour
     [Header("Sounds")]
     public AudioSource itemPickSFX;
     public AudioSource itemDropSFX, burshSFX, excavatorSFX, drillSFX, teethLaserSFX, AudienceCheerSFX;
+    public GameObject SoundsObject;
     private bool isLight, isRateus, isMusic, isVibration;
     AsyncOperation asyncLoad;
     private bool isCheck;
@@ -68,7 +69,33 @@ public class TeethReparing : MonoBehaviour
         StartCoroutine(adDelayCouroutine);
         Usman_SaveLoad.LoadProgress();
         action = TeethReparingActionPerform.Clipper;
+        if (!PlayerPrefs.HasKey("IsFirstTime"))
+        {
+            PlayerPrefs.SetInt("IsFirstTime", 0);
+        }
+        if (PlayerPrefs.GetInt("IsFirstTime") == 0)
+        {
+            StartCoroutine(ObjectEnableOrDisable(2.5f, lightIndication, true));
+        }
+        else
+        {
+            StartCoroutine(ObjectEnableOrDisable(1f, clipper, true));
+        }
+        if (SaveData.Instance.isMusic == true)
+        {
+            musicOnOffBtn.sprite = btnOnSprite;
+            SoundsObject.SetActive(true);
+            BgMusic.Instance.SoundsObject.SetActive(true);
+        }
+        else if (SaveData.Instance.isMusic == false)
+        {
+            musicOnOffBtn.sprite = btnOffSprite;
+            SoundsObject.SetActive(false);
+            BgMusic.Instance.SoundsObject.SetActive(false);
+        }
     }
+
+    #region ShowInterstitialAD
     public void ShowInterstitial()
     {
         if (MyAdsManager.instance)
@@ -76,7 +103,6 @@ public class TeethReparing : MonoBehaviour
             MyAdsManager.instance.ShowInterstitialAds();
         }
     }
-    #region ShowInterstitialAD
     private void CheckInterstitialAD()
     {
         if (MyAdsManager.Instance != null)
@@ -120,17 +146,27 @@ public class TeethReparing : MonoBehaviour
     #region LightOnOFF
     public void LightOnOff()
     {
-        if(isLight == false)
+        lightIndication.SetActive(false);
+        if (isLight == false)
         {
             isLight = true;
-            lightImage.sprite = onLightSprite;
+            lightHolder.sprite = lightOnSprite;
             lightWhiteLayer.transform.DOScale(new Vector3(1f, 1f, 1f), 0.15f);
         }
-        else if(isLight == true)
+        else if (isLight == true)
         {
             isLight = false;
-            lightImage.sprite = offLightSprite;
+            lightHolder.sprite = lightOffSprite;
             lightWhiteLayer.transform.DOScale(new Vector3(0f, 0f, 0f), 0.15f);
+        }
+        if (!PlayerPrefs.HasKey("IsFirstTime"))
+        {
+            PlayerPrefs.SetInt("IsFirstTime", 0);
+        }
+        if (PlayerPrefs.GetInt("IsFirstTime") == 0)
+        {
+            StartCoroutine(ObjectEnableOrDisable(1f, trayHandIndication, true));
+            StartCoroutine(ObjectEnableOrDisable(1f, clipper, true));
         }
     }
     #endregion
@@ -142,31 +178,40 @@ public class TeethReparing : MonoBehaviour
     }
     public void MusicOnOff()
     {
-        if(isMusic == false)
+        if (SaveData.Instance.isMusic == true)
         {
-            isMusic = true;
-            musicOnOffBtn.sprite = OffSprite;
+            musicOnOffBtn.sprite = btnOffSprite;
+            SoundsObject.SetActive(false);
+            BgMusic.Instance.SoundsObject.SetActive(false);
+            SaveData.Instance.isMusic = false;
         }
-        else if(isMusic == true)
+        else if (SaveData.Instance.isMusic == false)
         {
-            isMusic = false;
-            musicOnOffBtn.sprite = onSprite;
+            musicOnOffBtn.sprite = btnOnSprite;
+            SoundsObject.SetActive(true);
+            BgMusic.Instance.SoundsObject.SetActive(true);
+            SaveData.Instance.isMusic = true;
         }
-        settingPanel.SetActive(true);
+        Usman_SaveLoad.SaveProgress();
     }
     public void VibrationOnOff()
     {
-        if(isVibration == false)
+        if (isVibration == false)
         {
             isVibration = true;
-            vibrationOnOffBtn.sprite = OffSprite;
+            vibrationOnOffBtn.sprite = btnOffSprite;
+
         }
-        else if(isVibration == true)
+        else if (isVibration == true)
         {
             isVibration = false;
-            vibrationOnOffBtn.sprite = onSprite;
+            vibrationOnOffBtn.sprite = btnOnSprite;
+
+#if !UNITY_EDITOR
+            MoreMountains.NiceVibrations.NiceVibrationsDemoManager.Instance.TriggerHeavyImpact();
+#endif
+
         }
-        settingPanel.SetActive(true);
     }
 
     public void RateUsPanelOnOff()
@@ -187,6 +232,8 @@ public class TeethReparing : MonoBehaviour
     #region Next Scene Load
     public void LoadNextScene(string str)
     {
+        StartCoroutine(ObjectEnableOrDisable(0.1f, finalParticle, false));
+        StartCoroutine(ObjectEnableOrDisable(0.1f, balloonParticle.gameObject, false));
         loadingPanel.SetActive(true);
         StartCoroutine(LoadingScene(str));
     }
@@ -197,8 +244,10 @@ public class TeethReparing : MonoBehaviour
     {   
         if (action == TeethReparingActionPerform.Clipper)
         {
+            PlayerPrefs.SetInt("IsFirstTime", 1);
+            PlayerPrefs.Save();
             itemPickSFX.Play();
-            clipper.SetActive(false);
+            //clipper.SetActive(false);
         }
         else if(action == TeethReparingActionPerform.Brush)
         {
@@ -317,6 +366,7 @@ public class TeethReparing : MonoBehaviour
             print("All Task Done");
             Invoke("RateUsPanelOnOff", 2f);
         }
+        CheckInterstitialAD();
     }
 
     IEnumerator AfterTaskColliderAndIndicationsOn()

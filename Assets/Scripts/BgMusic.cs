@@ -3,6 +3,7 @@ using System.Collections;
 
 public class BgMusic : MonoBehaviour {
 
+    public GameObject SoundsObject;
     private static BgMusic instance = null;
     public static BgMusic Instance
     {

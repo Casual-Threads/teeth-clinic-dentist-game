@@ -162,9 +162,9 @@ public class MyAdsManager : MonoBehaviour
         {
             bannerView.Destroy();
         }
-        //AdSize adaptiveSize = AdSize.GetCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(AdSize.FullWidth);
+        AdSize adaptiveSize = AdSize.GetCurrentOrientationAnchoredAdaptiveBannerAdSizeWithWidth(AdSize.FullWidth);
         // Create a 320x50 banner at top of the screen
-        bannerView = new BannerView(AdmobBannerId, AdSize.Banner, AdmobBannerPosition);
+        bannerView = new BannerView(AdmobBannerId, adaptiveSize, AdmobBannerPosition);
         // Called when an ad request has successfully loaded.
         bannerView.OnAdLoaded += (sender, args) => OnBannerAdLoadEvent.Invoke();
         bannerView.OnAdFailedToLoad += (sender, args) => OnBannerAdFailToLoadEvent.Invoke();

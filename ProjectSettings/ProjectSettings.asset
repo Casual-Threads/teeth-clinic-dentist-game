@@ -12,7 +12,7 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: DefaultCompany
+  companyName: Happy Games Play
   productName: Teeth Cleaning Game
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
@@ -250,8 +250,8 @@ PlayerSettings:
   AndroidTargetDevices: 0
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: D:/Gulfam/ReuseAble/KeyStore/casualthreads(pass=casualthreads123).keystore
-  AndroidKeyaliasName: casualthreads
+  AndroidKeystoreName: D:/Gulfam/ReuseAble/KeyStore/happygames_mng@123.keystore
+  AndroidKeyaliasName: usman
   AndroidBuildApkPerCpuArchitecture: 0
   AndroidTVCompatibility: 0
   AndroidIsGame: 1
