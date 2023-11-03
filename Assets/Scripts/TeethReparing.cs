@@ -75,11 +75,11 @@ public class TeethReparing : MonoBehaviour
         }
         if (PlayerPrefs.GetInt("IsFirstTime") == 0)
         {
-            StartCoroutine(ObjectEnableOrDisable(2.5f, lightIndication, true));
+            StartCoroutine(ObjectEnableOrDisable(2f, lightIndication, true));
         }
         else
         {
-            StartCoroutine(ObjectEnableOrDisable(1f, clipper, true));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, clipper, true));
         }
         if (SaveData.Instance.isMusic == true)
         {
@@ -165,8 +165,8 @@ public class TeethReparing : MonoBehaviour
         }
         if (PlayerPrefs.GetInt("IsFirstTime") == 0)
         {
-            StartCoroutine(ObjectEnableOrDisable(1f, trayHandIndication, true));
-            StartCoroutine(ObjectEnableOrDisable(1f, clipper, true));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, trayHandIndication, true));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, clipper, true));
         }
     }
     #endregion
@@ -241,7 +241,8 @@ public class TeethReparing : MonoBehaviour
 
     #region TaskDone
     public void TaskDone()
-    {   
+    {
+        //clipper.transform.GetChild(1).gameObject.SetActive(false);
         if (action == TeethReparingActionPerform.Clipper)
         {
             PlayerPrefs.SetInt("IsFirstTime", 1);
@@ -416,6 +417,7 @@ public class TeethReparing : MonoBehaviour
     // First Task Tray Image On 1 by 1
     public void ObjectEnable(int index)
     {
+        
         if (index == 0)
         {
             if (trayImages[0].gameObject.activeSelf)

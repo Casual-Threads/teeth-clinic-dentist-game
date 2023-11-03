@@ -65,11 +65,11 @@ public class TeethCleaning : MonoBehaviour
         }
         if (PlayerPrefs.GetInt("IsFirstTime") == 0)
         {
-            StartCoroutine(ObjectEnableOrDisable(2.5f, lightIndication, true));
+            StartCoroutine(ObjectEnableOrDisable(2f, lightIndication, true));
         }
         else
         {
-            StartCoroutine(ObjectEnableOrDisable(1f, clipper, true));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, clipper, true));
         }
         if (SaveData.Instance.isMusic == true)
         {
@@ -153,8 +153,8 @@ public class TeethCleaning : MonoBehaviour
         }
         if (PlayerPrefs.GetInt("IsFirstTime") == 0)
         {
-            StartCoroutine(ObjectEnableOrDisable(1f, trayHandIndication, true));
-            StartCoroutine(ObjectEnableOrDisable(1f, clipper, true));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, trayHandIndication, true));
+            StartCoroutine(ObjectEnableOrDisable(0.5f, clipper, true));
         }
     }
 

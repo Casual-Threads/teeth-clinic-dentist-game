@@ -34,6 +34,7 @@ public class DragCGS : MonoBehaviour
     private int IndexTwo = 0;
     private int IndexThree = 0;
     private bool IsAlphaReduced, isAlphaIncreased, IsSecondObjectAlphaReduced, isSecondObjectAlphaIncreased;
+    //bool isIndicationOff;
     //private bool isPinkGermOff, isBlueGermOff, isGreenGermOff, isOrangeGermOff;
 
     #region Start Region
@@ -91,16 +92,64 @@ public class DragCGS : MonoBehaviour
     #region OnMouseUp
     void OnMouseUp()
     {
+        if(SaveData.Instance.isIndicationOff == false)
+        {
+            if (TeethCleaningController)
+            {
+                //TeethCleaningController.drillSFX.Stop();
+                TeethCleaningController.trayHandIndication.SetActive(true);
+            }
+            else if (TeethReparingController)
+            {
+                //TeethReparingController.drillSFX.Stop();
+                TeethReparingController.trayHandIndication.SetActive(true);
+            }
+            else if (TeethBracesController)
+            {
+                TeethBracesController.trayHandIndication.SetActive(true);
+                //TeethBracesController.drillSFX.Stop();
+            }
+            else if (TeethGumsController)
+            {
+                TeethGumsController.trayHandIndication.SetActive(true);
+                //TeethBracesController.drillSFX.Stop();
+            }
+        }
         MouseUp.Invoke();
         if (restPos)
         {
             transform.localPosition = InitialPosition;
+        }
+        if (TeethCleaningController)
+        {
+            TeethCleaningController.burshSFX.Stop();
+            TeethCleaningController.drillSFX.Stop();
+            TeethCleaningController.teethLaserSFX.Stop();
+        }
+        else if (TeethReparingController)
+        {
+            TeethReparingController.burshSFX.Stop();
+            TeethReparingController.drillSFX.Stop();
+            TeethReparingController.teethLaserSFX.Stop();
+        }
+        else if (TeethBracesController)
+        {
+            TeethBracesController.burshSFX.Stop();
+            TeethBracesController.drillSFX.Stop();
+            TeethBracesController.teethLaserSFX.Stop();
+        }
+        else if (TeethGumsController)
+        {
+            TeethGumsController.burshSFX.Stop();
+            TeethGumsController.teethLaserSFX.Stop();
         }
     }
 
     #endregion
     private void OnTriggerEnter2D(Collider2D col)
     {
+        SaveData.Instance.isIndicationOff = true;
+
         #region Teeth Cleaning
 
         if (TeethCleaningController)
@@ -983,21 +1032,25 @@ public class DragCGS : MonoBehaviour
                 }
 
             }
+
             else if (col.gameObject.name == "TeethTray" && gameObject.name == "CrackTeethOne")
             {
                 gameObject.SetActive(false);
                 TeethBracesController.TeethTrayInOut(0);
             }
+
             else if (col.gameObject.name == "TeethTray" && gameObject.name == "CrackTeethTwo")
             {
                 gameObject.SetActive(false);
                 TeethBracesController.TeethTrayInOut(1);
             }
+
             else if (col.gameObject.name == "TeethTray" && gameObject.name == "CrackTeethThree")
             {
                 gameObject.SetActive(false);
                 TeethBracesController.TeethTrayInOut(2);
             }
+
             else if (col.gameObject.name == "TeethTray" && gameObject.name == "CrackTeethFour")
             {
                 gameObject.SetActive(false);

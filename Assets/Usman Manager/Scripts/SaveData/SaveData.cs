@@ -44,6 +44,7 @@ public class SaveData
     public string ProfileName;
     public bool ProfileCreated = false;
     public bool isRateUs = true;
+    public bool isIndicationOff = false;
     public bool isSound = true, isMusic = true, isVibration = true, isRightControls = true;
     public int Coins = 3000;
     public List<PlayerProps> Players = new List<PlayerProps>();
